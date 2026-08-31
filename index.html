@@ -1,0 +1,1966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#315c4d">
+<meta name="description" content="Novie — Know yourself. Grow together.">
+<title>Novie — Know Yourself. Grow Together.</title>
+
+<style>
+:root{
+  --forest:#315c4d;
+  --forest-dark:#24483c;
+  --sage:#a9c6b4;
+  --mint:#dceee4;
+  --gold:#d8b76a;
+  --cream:#fffaf0;
+  --rose:#e9a9a9;
+  --lavender:#c8b8df;
+  --peach:#f4c7a1;
+  --sky:#a9d5df;
+  --ink:#24352f;
+  --muted:#718078;
+  --white:#ffffff;
+  --shadow:0 18px 45px rgba(49,92,77,.13);
+  --radius:24px;
+}
+
+*{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 8% 8%,rgba(216,183,106,.23),transparent 24%),
+    radial-gradient(circle at 90% 12%,rgba(200,184,223,.28),transparent 27%),
+    radial-gradient(circle at 80% 78%,rgba(169,198,180,.34),transparent 30%),
+    linear-gradient(135deg,#fffaf0 0%,#f5f1e8 48%,#eef6f0 100%);
+  min-height:100vh;
+}
+
+button,input,select,textarea{font:inherit}
+
+button{
+  border:0;
+  cursor:pointer;
+}
+
+.app{
+  max-width:1400px;
+  margin:auto;
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:250px 1fr;
+}
+
+/* SIDEBAR */
+.sidebar{
+  position:sticky;
+  top:0;
+  height:100vh;
+  padding:25px 18px;
+  background:rgba(255,255,255,.76);
+  backdrop-filter:blur(18px);
+  border-right:1px solid rgba(49,92,77,.10);
+  z-index:20;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:5px 10px 25px;
+}
+
+.logo-mark{
+  width:48px;
+  height:48px;
+  border-radius:17px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(145deg,var(--forest),#5e927c);
+  color:white;
+  font-size:25px;
+  box-shadow:0 10px 25px rgba(49,92,77,.22);
+}
+
+.logo h1{
+  margin:0;
+  font-size:27px;
+  letter-spacing:-1px;
+}
+
+.logo span{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.8px;
+  text-transform:uppercase;
+}
+
+.nav{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+
+.nav button{
+  text-align:left;
+  padding:13px 15px;
+  border-radius:16px;
+  background:transparent;
+  color:var(--ink);
+  font-weight:700;
+  transition:.2s;
+}
+
+.nav button:hover{
+  background:var(--mint);
+  transform:translateX(2px);
+}
+
+.nav button.active{
+  color:white;
+  background:linear-gradient(135deg,var(--forest),#507d6b);
+  box-shadow:0 9px 22px rgba(49,92,77,.2);
+}
+
+.nav-icon{
+  display:inline-block;
+  width:27px;
+}
+
+.sidebar-bottom{
+  position:absolute;
+  left:18px;
+  right:18px;
+  bottom:22px;
+}
+
+.streak-mini{
+  padding:16px;
+  border-radius:20px;
+  background:linear-gradient(145deg,#fff3cf,#fffaf0);
+  border:1px solid rgba(216,183,106,.35);
+}
+
+.streak-mini strong{
+  font-size:21px;
+}
+
+/* MAIN */
+main{
+  padding:28px clamp(18px,4vw,55px) 80px;
+  overflow:hidden;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  margin-bottom:25px;
+}
+
+.welcome{
+  color:var(--muted);
+  font-size:14px;
+}
+
+.welcome strong{
+  color:var(--ink);
+  font-size:17px;
+}
+
+.top-actions{
+  display:flex;
+  gap:9px;
+}
+
+.icon-btn{
+  width:45px;
+  height:45px;
+  border-radius:15px;
+  background:rgba(255,255,255,.78);
+  box-shadow:0 8px 20px rgba(49,92,77,.08);
+  font-size:19px;
+}
+
+/* HERO */
+.hero{
+  position:relative;
+  overflow:hidden;
+  min-height:310px;
+  padding:38px;
+  border-radius:34px;
+  color:white;
+  background:
+    radial-gradient(circle at 85% 15%,rgba(255,255,255,.24),transparent 25%),
+    radial-gradient(circle at 15% 90%,rgba(216,183,106,.25),transparent 27%),
+    linear-gradient(135deg,#315c4d,#527e6c 55%,#759e87);
+  box-shadow:var(--shadow);
+}
+
+.hero:before,
+.hero:after{
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.15);
+}
+
+.hero:before{
+  width:300px;
+  height:300px;
+  right:-80px;
+  bottom:-160px;
+}
+
+.hero:after{
+  width:170px;
+  height:170px;
+  right:120px;
+  top:-90px;
+}
+
+.hero-content{
+  position:relative;
+  z-index:2;
+  max-width:650px;
+}
+
+.hero-kicker{
+  display:inline-flex;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.15);
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.4px;
+  margin-bottom:16px;
+}
+
+.hero h2{
+  margin:0;
+  font-size:clamp(32px,5vw,58px);
+  line-height:1;
+  letter-spacing:-2.5px;
+}
+
+.hero p{
+  max-width:580px;
+  color:rgba(255,255,255,.84);
+  line-height:1.7;
+  margin:18px 0 24px;
+}
+
+.hero-buttons{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.primary{
+  padding:13px 19px;
+  border-radius:15px;
+  color:var(--forest-dark);
+  background:#fff;
+  font-weight:800;
+}
+
+.secondary{
+  padding:13px 19px;
+  border-radius:15px;
+  color:white;
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.25);
+  font-weight:800;
+}
+
+/* CARDS */
+.section{
+  display:none;
+  animation:fade .3s ease;
+}
+
+.section.active{
+  display:block;
+}
+
+@keyframes fade{
+  from{opacity:0;transform:translateY(7px)}
+  to{opacity:1;transform:none}
+}
+
+.section-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  margin:32px 0 15px;
+  gap:15px;
+}
+
+.section-title h2{
+  margin:0;
+  font-size:28px;
+  letter-spacing:-1px;
+}
+
+.section-title p{
+  margin:4px 0 0;
+  color:var(--muted);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+
+.grid.two{
+  grid-template-columns:repeat(2,1fr);
+}
+
+.card{
+  padding:22px;
+  background:rgba(255,255,255,.78);
+  border:1px solid rgba(49,92,77,.09);
+  border-radius:var(--radius);
+  box-shadow:0 10px 28px rgba(49,92,77,.07);
+}
+
+.card h3{
+  margin:0 0 8px;
+  font-size:18px;
+}
+
+.card p{
+  color:var(--muted);
+  line-height:1.6;
+  font-size:14px;
+}
+
+.card-action{
+  margin-top:16px;
+  width:100%;
+  padding:11px;
+  border-radius:13px;
+  background:var(--mint);
+  color:var(--forest-dark);
+  font-weight:800;
+}
+
+.feature{
+  min-height:175px;
+  position:relative;
+  overflow:hidden;
+}
+
+.feature:after{
+  content:"";
+  position:absolute;
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  right:-30px;
+  bottom:-40px;
+  background:rgba(255,255,255,.35);
+}
+
+.pink{background:linear-gradient(145deg,#fff0f0,#fffafa)}
+.gold{background:linear-gradient(145deg,#fff5d9,#fffdf5)}
+.lavender{background:linear-gradient(145deg,#f2ecfa,#fffaff)}
+.blue{background:linear-gradient(145deg,#eaf7fa,#fff)}
+.green{background:linear-gradient(145deg,#e8f5ed,#fff)}
+.peach{background:linear-gradient(145deg,#fff0e6,#fff)}
+
+/* DASHBOARD */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-top:18px;
+}
+
+.stat{
+  padding:18px;
+  border-radius:19px;
+  background:rgba(255,255,255,.72);
+}
+
+.stat small{
+  color:var(--muted);
+  font-weight:700;
+}
+
+.stat strong{
+  display:block;
+  margin-top:5px;
+  font-size:25px;
+}
+
+.progress{
+  height:9px;
+  border-radius:999px;
+  background:#e5ebe7;
+  overflow:hidden;
+  margin-top:13px;
+}
+
+.progress span{
+  display:block;
+  height:100%;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--forest),var(--gold));
+}
+
+/* PROFILE */
+.profile-card{
+  display:grid;
+  grid-template-columns:120px 1fr;
+  gap:24px;
+  align-items:center;
+}
+
+.avatar{
+  width:105px;
+  height:105px;
+  border-radius:35px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(145deg,var(--lavender),var(--mint));
+  font-size:43px;
+}
+
+.tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:12px;
+}
+
+.tag{
+  padding:7px 10px;
+  border-radius:999px;
+  background:var(--mint);
+  color:var(--forest-dark);
+  font-size:12px;
+  font-weight:800;
+}
+
+/* FORMS */
+.form{
+  display:grid;
+  gap:13px;
+}
+
+label{
+  font-size:12px;
+  font-weight:800;
+  color:var(--forest-dark);
+}
+
+input,textarea,select{
+  width:100%;
+  margin-top:6px;
+  padding:13px 14px;
+  border-radius:14px;
+  border:1px solid #d8e1dc;
+  background:#fff;
+  color:var(--ink);
+  outline:none;
+}
+
+input:focus,textarea:focus,select:focus{
+  border-color:var(--sage);
+  box-shadow:0 0 0 4px rgba(169,198,180,.18);
+}
+
+textarea{
+  min-height:110px;
+  resize:vertical;
+}
+
+.submit{
+  padding:13px 18px;
+  border-radius:14px;
+  background:var(--forest);
+  color:white;
+  font-weight:800;
+}
+
+/* MOOD */
+.moods{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+}
+
+.mood{
+  padding:17px 7px;
+  border-radius:17px;
+  background:#fff;
+  border:1px solid #e1e8e3;
+  text-align:center;
+  font-size:26px;
+}
+
+.mood small{
+  display:block;
+  font-size:11px;
+  color:var(--muted);
+  margin-top:5px;
+  font-weight:700;
+}
+
+/* QUEST */
+.quest{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  padding:16px;
+  background:#fff;
+  border-radius:18px;
+  margin-top:10px;
+  border:1px solid #e6ece8;
+}
+
+.quest-icon{
+  width:48px;
+  height:48px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  font-size:22px;
+  background:var(--mint);
+}
+
+.quest button{
+  margin-left:auto;
+  padding:9px 13px;
+  border-radius:11px;
+  background:var(--forest);
+  color:#fff;
+  font-size:12px;
+  font-weight:800;
+}
+
+/* MAGI */
+.magi{
+  background:
+    radial-gradient(circle at 90% 10%,rgba(216,183,106,.3),transparent 25%),
+    linear-gradient(135deg,#4e526f,#705f82);
+  color:#fff;
+}
+
+.magi p{
+  color:rgba(255,255,255,.78);
+}
+
+.magi .card-action{
+  background:rgba(255,255,255,.15);
+  color:white;
+  border:1px solid rgba(255,255,255,.18);
+}
+
+.prompt-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+.prompt{
+  padding:15px;
+  border-radius:16px;
+  background:rgba(255,255,255,.1);
+  color:white;
+  text-align:left;
+  border:1px solid rgba(255,255,255,.15);
+}
+
+.prompt:hover{
+  background:rgba(255,255,255,.18);
+}
+
+/* CONNECTION */
+.connection{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding:17px;
+  background:white;
+  border-radius:18px;
+  border:1px solid #e4ebe7;
+}
+
+.connection-avatar{
+  width:54px;
+  height:54px;
+  border-radius:19px;
+  display:grid;
+  place-items:center;
+  background:var(--peach);
+  font-size:24px;
+}
+
+.connection button{
+  margin-left:auto;
+  padding:10px 13px;
+  border-radius:11px;
+  background:var(--mint);
+  color:var(--forest-dark);
+  font-weight:800;
+}
+
+/* GRAPH */
+.graph{
+  position:relative;
+  height:230px;
+  border-radius:20px;
+  padding:18px;
+  background:
+    linear-gradient(rgba(49,92,77,.07) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(49,92,77,.07) 1px,transparent 1px);
+  background-size:40px 40px;
+  overflow:hidden;
+}
+
+.graph svg{
+  width:100%;
+  height:100%;
+}
+
+.legend{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-top:12px;
+}
+
+.legend span{
+  padding:7px 10px;
+  border-radius:999px;
+  background:var(--mint);
+  font-size:11px;
+  font-weight:800;
+}
+
+/* CYCLE */
+.cycle-ring{
+  width:190px;
+  height:190px;
+  margin:10px auto;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:
+    conic-gradient(var(--rose) 0 18%,
+    var(--peach) 18% 36%,
+    var(--gold) 36% 70%,
+    var(--sage) 70% 100%);
+  position:relative;
+}
+
+.cycle-ring:after{
+  content:"";
+  width:130px;
+  height:130px;
+  background:white;
+  border-radius:50%;
+  position:absolute;
+}
+
+.cycle-center{
+  position:relative;
+  z-index:2;
+  text-align:center;
+}
+
+.cycle-center strong{
+  display:block;
+  font-size:28px;
+}
+
+/* MODAL */
+.modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(22,37,32,.5);
+  backdrop-filter:blur(8px);
+  z-index:100;
+  padding:20px;
+  align-items:center;
+  justify-content:center;
+}
+
+.modal.show{
+  display:flex;
+}
+
+.modal-box{
+  width:min(650px,100%);
+  max-height:90vh;
+  overflow:auto;
+  background:var(--cream);
+  border-radius:28px;
+  padding:26px;
+  box-shadow:0 30px 80px rgba(0,0,0,.2);
+}
+
+.close{
+  float:right;
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  background:#edf2ee;
+}
+
+/* ONBOARDING */
+.onboarding{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:200;
+  background:
+    radial-gradient(circle at 15% 15%,rgba(216,183,106,.35),transparent 25%),
+    radial-gradient(circle at 90% 20%,rgba(200,184,223,.35),transparent 27%),
+    linear-gradient(135deg,#fffaf0,#eef6f0);
+  padding:25px;
+  overflow:auto;
+}
+
+.onboarding.show{
+  display:block;
+}
+
+.onboard-box{
+  width:min(760px,100%);
+  margin:40px auto;
+  background:rgba(255,255,255,.84);
+  border:1px solid rgba(49,92,77,.1);
+  border-radius:32px;
+  padding:clamp(24px,5vw,50px);
+  box-shadow:var(--shadow);
+}
+
+.onboard-logo{
+  color:var(--forest);
+  font-size:42px;
+  font-weight:900;
+  letter-spacing:-2px;
+}
+
+.choice-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin:10px 0 20px;
+}
+
+.choice{
+  padding:14px;
+  border-radius:15px;
+  background:#fff;
+  border:1px solid #dde6e0;
+  text-align:left;
+  font-weight:700;
+}
+
+.choice.selected{
+  background:var(--mint);
+  border-color:var(--forest);
+  color:var(--forest-dark);
+}
+
+.hide{
+  display:none!important;
+}
+
+.toast{
+  position:fixed;
+  bottom:24px;
+  left:50%;
+  transform:translateX(-50%) translateY(100px);
+  background:var(--forest-dark);
+  color:white;
+  padding:13px 18px;
+  border-radius:14px;
+  z-index:500;
+  box-shadow:0 15px 35px rgba(0,0,0,.2);
+  transition:.3s;
+}
+
+.toast.show{
+  transform:translateX(-50%) translateY(0);
+}
+
+/* MOBILE */
+.mobile-nav{
+  display:none;
+}
+
+@media(max-width:900px){
+  .app{
+    display:block;
+  }
+
+  .sidebar{
+    display:none;
+  }
+
+  main{
+    padding:18px 15px 95px;
+  }
+
+  .grid,.grid.two{
+    grid-template-columns:1fr;
+  }
+
+  .stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .hero{
+    padding:27px 23px;
+    min-height:350px;
+  }
+
+  .profile-card{
+    grid-template-columns:1fr;
+    text-align:center;
+  }
+
+  .avatar{
+    margin:auto;
+  }
+
+  .tags{
+    justify-content:center;
+  }
+
+  .mobile-nav{
+    display:flex;
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    z-index:50;
+    padding:8px;
+    gap:5px;
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(15px);
+    border-top:1px solid rgba(49,92,77,.1);
+  }
+
+  .mobile-nav button{
+    flex:1;
+    padding:8px 3px;
+    border-radius:12px;
+    background:transparent;
+    color:var(--muted);
+    font-size:10px;
+    font-weight:800;
+  }
+
+  .mobile-nav button.active{
+    background:var(--mint);
+    color:var(--forest-dark);
+  }
+}
+
+@media(max-width:520px){
+  .prompt-grid,.choice-grid{
+    grid-template-columns:1fr;
+  }
+
+  .moods{
+    grid-template-columns:repeat(5,1fr);
+  }
+
+  .mood{
+    padding:12px 3px;
+  }
+
+  .hero h2{
+    font-size:39px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-mark">N</div>
+    <div>
+      <h1>Novie</h1>
+      <span>Know yourself. Grow together.</span>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <button class="active" onclick="showSection('home',this)">🏡 <span class="nav-icon"></span>Home</button>
+    <button onclick="showSection('me',this)">🪞 <span class="nav-icon"></span>Me</button>
+    <button onclick="showSection('love',this)">💗 <span class="nav-icon"></span>Love</button>
+    <button onclick="showSection('friends',this)">🧑‍🤝‍🧑 <span class="nav-icon"></span>Friends</button>
+    <button onclick="showSection('family',this)">🏠 <span class="nav-icon"></span>Family</button>
+    <button onclick="showSection('magi',this)">✨ <span class="nav-icon"></span>MAGI</button>
+    <button onclick="showSection('growth',this)">📈 <span class="nav-icon"></span>My Growth</button>
+    <button onclick="showSection('explore',this)">🌙 <span class="nav-icon"></span>Explore</button>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <div class="streak-mini">
+      🔥 <strong id="streakSide">1 day</strong>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">Keep growing — life happens.</div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main>
+
+<div class="topbar">
+  <div class="welcome">
+    Welcome back, <strong id="userName">Novie Explorer</strong> 🌱
+  </div>
+  <div class="top-actions">
+    <button class="icon-btn" onclick="openMagi()">✨</button>
+    <button class="icon-btn" onclick="showToast('🔔 You are all caught up!')">🔔</button>
+  </div>
+</div>
+
+<!-- HOME -->
+<section id="home" class="section active">
+
+  <div class="hero">
+    <div class="hero-content">
+      <div class="hero-kicker">🌱 YOUR PLACE TO GROW</div>
+      <h2>Know yourself.<br>Grow together.</h2>
+      <p>
+        Novie helps you understand yourself, strengthen the relationships
+        that matter, discover new connections, and turn small moments into
+        meaningful growth.
+      </p>
+      <div class="hero-buttons">
+        <button class="primary" onclick="showSection('me',document.querySelectorAll('.nav button')[1])">Build My Profile →</button>
+        <button class="secondary" onclick="openMagi()">✨ Ask MAGI</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <small>🔥 Streak</small>
+      <strong id="streakHome">1</strong>
+      <div class="progress"><span style="width:35%"></span></div>
+    </div>
+    <div class="stat">
+      <small>⭐ Novie XP</small>
+      <strong id="xpHome">0</strong>
+      <div class="progress"><span id="xpBar" style="width:5%"></span></div>
+    </div>
+    <div class="stat">
+      <small>🌱 Growth</small>
+      <strong id="growthHome">12%</strong>
+      <div class="progress"><span id="growthBar" style="width:12%"></span></div>
+    </div>
+    <div class="stat">
+      <small>💜 Connections</small>
+      <strong id="connectionsHome">0</strong>
+      <div class="progress"><span style="width:25%"></span></div>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <div>
+      <h2>Today's Novie ✨</h2>
+      <p>A tiny step can change the whole direction of a day.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card feature green">
+      <div style="font-size:30px">☀️</div>
+      <h3>Today's Check-In</h3>
+      <p>How are you really doing today?</p>
+      <button class="card-action" onclick="openCheckIn()">Check in →</button>
+    </div>
+
+    <div class="card feature lavender">
+      <div style="font-size:30px">🎁</div>
+      <h3>Mystery Question</h3>
+      <p>Let Novie surprise you with something worth thinking about.</p>
+      <button class="card-action" onclick="mysteryQuestion()">Surprise me →</button>
+    </div>
+
+    <div class="card feature pink">
+      <div style="font-size:30px">❤️</div>
+      <h3>Show Some Love</h3>
+      <p>One thoughtful action can change someone's entire day.</p>
+      <button class="card-action" onclick="loveIdea()">Give me an idea →</button>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <div>
+      <h2>Today's Quests 🎮</h2>
+      <p>Choose what feels right. No guilt if life gets busy.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="quest">
+      <div class="quest-icon">🌱</div>
+      <div><strong>Grow</strong><div style="font-size:12px;color:var(--muted)">Name one thing you learned about yourself.</div></div>
+      <button onclick="completeQuest(this,10)">+10 XP</button>
+    </div>
+    <div class="quest">
+      <div class="quest-icon">💬</div>
+      <div><strong>Communicate</strong><div style="font-size:12px;color:var(--muted)">Ask someone a question and really listen.</div></div>
+      <button onclick="completeQuest(this,10)">+10 XP</button>
+    </div>
+    <div class="quest">
+      <div class="quest-icon">❤️</div>
+      <div><strong>Connect</strong><div style="font-size:12px;color:var(--muted)">Tell someone something you appreciate about them.</div></div>
+      <button onclick="completeQuest(this,15)">+15 XP</button>
+    </div>
+    <div class="quest">
+      <div class="quest-icon">🎮</div>
+      <div><strong>Have Fun</strong><div style="font-size:12px;color:var(--muted)">Play a Novie question game.</div></div>
+      <button onclick="wouldYouRather()">Play</button>
+    </div>
+  </div>
+</section>
+
+<!-- ME -->
+<section id="me" class="section">
+
+  <div class="section-title">
+    <div>
+      <h2>🪞 Me</h2>
+      <p>Novie starts with understanding the person using it — you.</p>
+    </div>
+  </div>
+
+  <div class="card profile-card">
+    <div class="avatar" id="profileAvatar">🌱</div>
+    <div>
+      <h2 id="profileName">Your Novie Profile</h2>
+      <p id="profileBio">Tell Novie a little about yourself so your experience can become more personal.</p>
+      <div class="tags" id="profileTags">
+        <span class="tag">New Explorer</span>
+      </div>
+      <button class="submit" style="margin-top:15px" onclick="openProfile()">✏️ Edit My Profile</button>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <div>
+      <h2>Your inner world</h2>
+      <p>These are growth areas, not grades.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>🧠 Self-awareness</h3>
+      <p>Understand your patterns, needs, values and emotions.</p>
+      <div class="progress"><span style="width:34%"></span></div>
+      <small>34% explored</small>
+    </div>
+    <div class="card">
+      <h3>💬 Communication</h3>
+      <p>Learn how you express yourself and how you receive others.</p>
+      <div class="progress"><span style="width:22%"></span></div>
+      <small>22% explored</small>
+    </div>
+    <div class="card">
+      <h3>🛡️ Boundaries</h3>
+      <p>Practice knowing what you need and communicating it respectfully.</p>
+      <div class="progress"><span style="width:18%"></span></div>
+      <small>18% explored</small>
+    </div>
+  </div>
+
+  <div class="section-title">
+    <div>
+      <h2>🌤️ Quick Check-In</h2>
+      <p>There is no wrong answer.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="moods">
+      <button class="mood" onclick="chooseMood('Amazing','🤩',this)">🤩<small>Amazing</small></button>
+      <button class="mood" onclick="chooseMood('Good','😊',this)">😊<small>Good</small></button>
+      <button class="mood" onclick="chooseMood('Okay','😐',this)">😐<small>Okay</small></button>
+      <button class="mood" onclick="chooseMood('Low','😔',this)">😔<small>Low</small></button>
+      <button class="mood" onclick="chooseMood('Rough','😣',this)">😣<small>Rough</small></button>
+    </div>
+    <div id="moodResult" style="margin-top:15px;color:var(--forest);font-weight:700"></div>
+  </div>
+</section>
+
+<!-- LOVE -->
+<section id="love" class="section">
+
+  <div class="section-title">
+    <div>
+      <h2>💗 Love</h2>
+      <p>Whether you are single, dating, partnered, married, healing, or figuring it out.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card feature pink">
+      <div style="font-size:31px">💬</div>
+      <h3>Communication Lab</h3>
+      <p>Practice real situations and learn different ways to say what you mean.</p>
+      <button class="card-action" onclick="communicationLab()">Open Lab →</button>
+    </div>
+
+    <div class="card feature peach">
+      <div style="font-size:31px">❤️</div>
+      <h3>Ways to Show Love</h3>
+      <p>Ideas for affection, appreciation, support, repair and everyday connection.</p>
+      <button class="card-action" onclick="loveIdea()">Give me an idea →</button>
+    </div>
+
+    <div class="card feature lavender">
+      <div style="font-size:31px">🤝</div>
+      <h3>Relationship Check-In</h3>
+      <p>Check in together without turning your relationship into a score.</p>
+      <button class="card-action" onclick="relationshipCheck()">Start →</button>
+    </div>
+
+    <div class="card feature gold">
+      <div style="font-size:31px">🚦</div>
+      <h3>Green Flags & Patterns</h3>
+      <p>Explore healthy behaviors, warning signs, needs and boundaries.</p>
+      <button class="card-action" onclick="showToast('🚦 This area will grow into a full relationship education library.')">Explore →</button>
+    </div>
+
+    <div class="card feature blue">
+      <div style="font-size:31px">🎯</div>
+      <h3>Shared Goals</h3>
+      <p>Create goals together and celebrate progress.</p>
+      <button class="card-action" onclick="showToast('🎯 Shared goals are ready for your future connection.')">Create →</button>
+    </div>
+
+    <div class="card feature green">
+      <div style="font-size:31px">💌</div>
+      <h3>Repair & Reconnect</h3>
+      <p>When something goes wrong, Novie helps you find a next step.</p>
+      <button class="card-action" onclick="repairPrompt()">Help us reconnect →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FRIENDS -->
+<section id="friends" class="section">
+
+  <div class="section-title">
+    <div>
+      <h2>🧑‍🤝‍🧑 Friends</h2>
+      <p>Friendship deserves just as much care as romance.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card feature lavender">
+      <h3>🧩 Friendship Compatibility</h3>
+      <p>Discover shared interests, communication styles and things you might enjoy together.</p>
+      <button class="card-action" onclick="showToast('🧩 Friendship matching will connect profiles in the next stage.')">Explore</button>
+    </div>
+
+    <div class="card feature green">
+      <h3>🎲 Would You Rather</h3>
+      <p>Easy questions that can turn into surprisingly good conversations.</p>
+      <button class="card-action" onclick="wouldYouRather()">Play →</button>
+    </div>
+
+    <div class="card feature pink">
+      <h3>💌 Reconnect</h3>
+      <p>Have someone you miss? Get an easy way to reach out.</p>
+      <button class="card-action" onclick="showToast('💌 Try: “I was thinking about you today. How have you been?”')">Give me words</button>
+    </div>
+
+    <div class="card feature blue">
+      <h3>✉️ Pen Pals</h3>
+      <p>Eventually, Novie can connect people around shared interests and safe community spaces.</p>
+      <button class="card-action" onclick="showToast('✉️ Pen Pals will use interests and safety settings for future matching.')">Explore idea</button>
+    </div>
+  </div>
+</section>
+
+<!-- FAMILY -->
+<section id="family" class="section">
+
+  <div class="section-title">
+    <div>
+      <h2>🏠 Family</h2>
+      <p>Build connection without making one person the “problem.”</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>💜 Your Family Space</h3>
+    <p>Invite people you trust and create shared check-ins, challenges and moments.</p>
+
+    <div class="connection">
+      <div class="connection-avatar">👩</div>
+      <div><strong>You</strong><div style="font-size:12px;color:var(--muted)">Family organizer</div></div>
+      <span class="tag">You</span>
+    </div>
+
+    <div class="connection" style="margin-top:10px">
+      <div class="connection-avatar">👩‍🦰</div>
+      <div><strong>Sister</strong><div style="font-size:12px;color:var(--muted)">Invite someone to test Novie with you</div></div>
+      <button onclick="showToast('🔗 Connection invitations will be real once accounts are added.')">Invite</button>
+    </div>
+
+    <button class="submit" style="margin-top:15px" onclick="showToast('🏠 Family space created!')">＋ Add Family Member</button>
+  </div>
+
+  <div class="grid" style="margin-top:16px">
+    <div class="card feature green">
+      <h3>🌈 Kid Mode</h3>
+      <p>Short, playful check-ins designed to feel like games rather than homework.</p>
+      <button class="card-action" onclick="kidQuestion()">Try a kid question</button>
+    </div>
+
+    <div class="card feature peach">
+      <h3>💡 Family Insight</h3>
+      <p>Novie can eventually notice patterns and suggest small connection opportunities.</p>
+      <button class="card-action" onclick="showToast('💡 Example: “Try 15 minutes of one-on-one time this week.”')">See example</button>
+    </div>
+  </div>
+</section>
+
+<!-- MAGI -->
+<section id="magi" class="section">
+
+  <div class="section-title">
+    <div>
+      <h2>✨ MAGI</h2>
+      <p>Your Novie space for reflection, ideas, healing and communication support.</p>
+    </div>
+  </div>
+
+  <div class="card magi">
+    <h2>What do you need right now?</h2>
+    <p>Pick one, or tell MAGI what is happening in your own words.</p>
+
+    <div class="prompt-grid">
+      <button class="prompt" onclick="magiPrompt('I need to calm down')">🫶 Help me calm down</button>
+      <button class="prompt" onclick="magiPrompt('I need to process something')">🌧️ Help me process</button>
+      <button class="prompt" onclick="magiPrompt('I need something positive')">☀️ Give me something positive</button>
+      <button class="prompt" onclick="magiPrompt('Help me understand myself')">🪞 Help me understand myself</button>
+      <button class="prompt" onclick="magiPrompt('Help me communicate')">💬 Help me communicate</button>
+      <button class="prompt" onclick="magiPrompt('I need healing reflection')">🌱 Healing reflection</button>
+      <button class="prompt" onclick="magiPrompt('Give me a journal prompt')">📖 Journal prompt</button>
+      <button class="prompt" onclick="magiPrompt('Surprise me')">🎁 Surprise me</button>
+    </div>
+
+    <textarea id="magiInput" placeholder="Or type what is actually going on..."></textarea>
+    <button class="primary" style="margin-top:10px" onclick="askMagi()">✨ Ask MAGI</button>
+    <div id="magiResponse" style="margin-top:18px"></div>
+  </div>
+
+  <div class="section-title">
+    <div>
+      <h2>🌸 Healing & Reflection Library</h2>
+      <p>Small exercises for different moments.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>🌬️ 60-Second Reset</h3>
+      <p>Pause. Unclench your jaw. Drop your shoulders. Take one slow breath. Name what you need right now.</p>
+      <button class="card-action" onclick="showToast('🌬️ Take one slow breath. You do not have to solve everything right now.')">Begin</button>
+    </div>
+    <div class="card">
+      <h3>💛 Positive Moment</h3>
+      <p>Name one thing that went right today, even if it was tiny.</p>
+      <button class="card-action" onclick="showToast('💛 Tiny good things count.')">Try it</button>
+    </div>
+    <div class="card">
+      <h3>📝 Release It</h3>
+      <p>Write what you wish you could say. You do not have to send it.</p>
+      <button class="card-action" onclick="openJournal()">Write privately</button>
+    </div>
+  </div>
+</section>
+
+<!-- GROWTH -->
+<section id="growth" class="section">
+
+  <div class="section-title">
+    <div>
+      <h2>📈 My Growth</h2>
+      <p>Watch your patterns change over time. These are reflections, not grades.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Your Novie Growth Journey</h3>
+    <p>This is the kind of progress view we can eventually make much more intelligent as Novie gathers your check-ins and activities.</p>
+
+    <div class="graph">
+      <svg viewBox="0 0 800 220" preserveAspectRatio="none">
+        <polyline
+          fill="none"
+          stroke="#315c4d"
+          stroke-width="5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          points="20,185 110,160 200,170 290,130 380,145 470,95 560,110 650,70 780,45"/>
+        <polyline
+          fill="none"
+          stroke="#d8b76a"
+          stroke-width="4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          points="20,200 110,180 200,185 290,160 380,155 470,135 560,120 650,125 780,90"/>
+      </svg>
+    </div>
+
+    <div class="legend">
+      <span>🌱 Self-awareness</span>
+      <span>💬 Communication</span>
+      <span>❤️ Connection</span>
+      <span>🛡️ Boundaries</span>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:16px">
+    <div class="card">
+      <h3>🌱 Self-awareness</h3>
+      <strong style="font-size:30px">34%</strong>
+      <div class="progress"><span style="width:34%"></span></div>
+    </div>
+    <div class="card">
+      <h3>💬 Communication</h3>
+      <strong style="font-size:30px">22%</strong>
+      <div class="progress"><span style="width:22%"></span></div>
+    </div>
+    <div class="card">
+      <h3>❤️ Connection</h3>
+      <strong style="font-size:30px">41%</strong>
+      <div class="progress"><span style="width:41%"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPLORE -->
+<section id="explore" class="section">
+
+  <div class="section-title">
+    <div>
+      <h2>🌙 Explore</h2>
+      <p>Science, curiosity, astrology, cycles and the world around you.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+
+    <div class="card feature lavender">
+      <div style="font-size:31px">🌙</div>
+      <h3>Moon & Full Moon</h3>
+      <p>
+        Explore moon phases, full-moon traditions, reflection prompts and
+        optional astrology-based interpretations.
+      </p>
+      <button class="card-action" onclick="moonInfo()">Explore the moon →</button>
+    </div>
+
+    <div class="card feature pink">
+      <div style="font-size:31px">🌸</div>
+      <h3>Cycle & Body Awareness</h3>
+      <p>
+        An optional private space for menstrual-cycle tracking, symptoms,
+        emotions, energy, notes and patterns.
+      </p>
+      <button class="card-action" onclick="cycleInfo()">Explore cycle tools →</button>
+    </div>
+
+    <div class="card feature green">
+      <div style="font-size:31px">🔬</div>
+      <h3>Science & Relationships</h3>
+      <p>Evidence-informed relationship education, communication concepts and emotional skills.</p>
+      <button class="card-action" onclick="showToast('🔬 Future Novie will separate evidence-based information from optional astrology.')">Explore</button>
+    </div>
+
+    <div class="card feature gold">
+      <div style="font-size:31px">♈</div>
+      <h3>Astrology</h3>
+      <p>Optional. Never required. Explore signs, patterns and reflection without making astrology the whole app.</p>
+      <button class="card-action" onclick="showToast('♈ Astrology will remain an optional layer of Novie.')">Explore</button>
+    </div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav">
+  <button class="active" onclick="showSection('home',this)">🏡<br>Home</button>
+  <button onclick="showSection('me',this)">🪞<br>Me</button>
+  <button onclick="showSection('love',this)">💗<br>Love</button>
+  <button onclick="showSection('magi',this)">✨<br>MAGI</button>
+  <button onclick="showSection('growth',this)">📈<br>Growth</button>
+</div>
+
+<!-- ONBOARDING -->
+<div class="onboarding" id="onboarding">
+  <div class="onboard-box">
+    <div class="onboard-logo">Novie 🌱</div>
+    <p style="color:var(--muted);font-weight:700">Know yourself. Grow together.</p>
+
+    <h1>Let's make Novie yours.</h1>
+    <p style="line-height:1.7;color:var(--muted)">
+      Before Novie can become personalized, tell it a little about the person
+      behind the screen. You can change anything later.
+    </p>
+
+    <div class="form">
+      <label>Your name
+        <input id="onboardName" placeholder="What should Novie call you?">
+      </label>
+
+      <label>What brings you to Novie?
+        <select id="onboardGoal">
+          <option value="">Choose one...</option>
+          <option>Understanding myself</option>
+          <option>Improving my relationship</option>
+          <option>Dating and connection</option>
+          <option>Friendship</option>
+          <option>Family connection</option>
+          <option>Healing and personal growth</option>
+          <option>Just exploring</option>
+        </select>
+      </label>
+
+      <label>Pick things you are interested in</label>
+      <div class="choice-grid" id="interestChoices">
+        <button class="choice" onclick="toggleChoice(this)">🌱 Personal growth</button>
+        <button class="choice" onclick="toggleChoice(this)">❤️ Relationships</button>
+        <button class="choice" onclick="toggleChoice(this)">🧑‍🤝‍🧑 Friendship</button>
+        <button class="choice" onclick="toggleChoice(this)">🏠 Family</button>
+        <button class="choice" onclick="toggleChoice(this)">🌙 Astrology</button>
+        <button class="choice" onclick="toggleChoice(this)">🎨 Creativity</button>
+        <button class="choice" onclick="toggleChoice(this)">🎮 Games</button>
+        <button class="choice" onclick="toggleChoice(this)">🧠 Psychology</button>
+      </div>
+
+      <label>What do you want more of?</label>
+      <textarea id="onboardMore" placeholder="Tell Novie anything you want it to understand about you..."></textarea>
+
+      <button class="submit" onclick="finishOnboarding()">🌱 Enter Novie</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <button class="close" onclick="closeModal()">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let data = JSON.parse(localStorage.getItem("novieData") || "{}");
+
+if(!data.xp) data.xp = 0;
+if(!data.streak) data.streak = 1;
+if(!data.connections) data.connections = 0;
+
+function save(){
+  localStorage.setItem("novieData",JSON.stringify(data));
+  updateUI();
+}
+
+function updateUI(){
+  const name = data.name || "Novie Explorer";
+  document.getElementById("userName").textContent = name;
+  document.getElementById("profileName").textContent = data.name ? data.name : "Your Novie Profile";
+  document.getElementById("profileBio").textContent =
+    data.more || "Tell Novie a little about yourself so your experience can become more personal.";
+
+  document.getElementById("xpHome").textContent = data.xp;
+  document.getElementById("streakHome").textContent = data.streak;
+  document.getElementById("streakSide").textContent = data.streak + (data.streak === 1 ? " day" : " days");
+  document.getElementById("connectionsHome").textContent = data.connections;
+
+  const xpWidth = Math.min(100,Math.max(5,(data.xp % 100)));
+  document.getElementById("xpBar").style.width = xpWidth + "%";
+
+  if(data.interests){
+    document.getElementById("profileTags").innerHTML =
+      data.interests.map(x=>`<span class="tag">${x}</span>`).join("");
+  }
+}
+
+function showSection(id,button){
+  document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+
+  document.querySelectorAll(".nav button,.mobile-nav button").forEach(x=>x.classList.remove("active"));
+  if(button) button.classList.add("active");
+
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function showToast(message){
+  const t=document.getElementById("toast");
+  t.textContent=message;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),3000);
+}
+
+function openModal(html){
+  document.getElementById("modalContent").innerHTML=html;
+  document.getElementById("modal").classList.add("show");
+}
+
+function closeModal(){
+  document.getElementById("modal").classList.remove("show");
+}
+
+function openProfile(){
+  openModal(`
+    <h2>🪞 Your Novie Profile</h2>
+    <p>Update the information Novie uses to personalize your experience.</p>
+    <div class="form">
+      <label>Name
+        <input id="editName" value="${data.name || ""}">
+      </label>
+      <label>About you
+        <textarea id="editMore">${data.more || ""}</textarea>
+      </label>
+      <button class="submit" onclick="saveProfile()">Save My Profile</button>
+    </div>
+  `);
+}
+
+function saveProfile(){
+  data.name=document.getElementById("editName").value.trim() || "Novie Explorer";
+  data.more=document.getElementById("editMore").value.trim();
+  save();
+  closeModal();
+  showToast("🌱 Your Novie profile was updated!");
+}
+
+function finishOnboarding(){
+  const name=document.getElementById("onboardName").value.trim();
+  const goal=document.getElementById("onboardGoal").value;
+  const more=document.getElementById("onboardMore").value.trim();
+
+  if(!name){
+    showToast("🌱 Tell Novie your name first.");
+    return;
+  }
+
+  const interests=[...document.querySelectorAll("#interestChoices .selected")]
+    .map(x=>x.textContent.trim());
+
+  data.name=name;
+  data.goal=goal;
+  data.more=more;
+  data.interests=interests;
+  data.xp=20;
+  data.growth=12;
+
+  save();
+  document.getElementById("onboarding").classList.remove("show");
+  showToast("💜 Welcome to Novie, "+name+"!");
+}
+
+function toggleChoice(el){
+  el.classList.toggle("selected");
+}
+
+function completeQuest(button,amount){
+  button.textContent="✓ Done";
+  button.disabled=true;
+  data.xp += amount;
+  data.growth = Math.min(100,(data.growth || 12)+1);
+  save();
+  showToast("✨ +"+amount+" XP! Tiny steps count.");
+}
+
+function chooseMood(mood,emoji,button){
+  document.querySelectorAll(".mood").forEach(x=>x.style.outline="none");
+  button.style.outline="3px solid var(--sage)";
+  data.lastMood=mood;
+  data.xp += 5;
+  save();
+  document.getElementById("moodResult").textContent =
+    emoji+" You chose "+mood+". Want to explore why?";
+  showToast("🌱 Check-in saved. +5 XP");
+}
+
+function openCheckIn(){
+  openModal(`
+    <h2>☀️ Today's Check-In</h2>
+    <p>Take a moment. You do not have to explain everything.</p>
+    <div class="moods" style="margin:18px 0">
+      <button class="mood" onclick="chooseMood('Amazing','🤩',this);closeModal()">🤩<small>Amazing</small></button>
+      <button class="mood" onclick="chooseMood('Good','😊',this);closeModal()">😊<small>Good</small></button>
+      <button class="mood" onclick="chooseMood('Okay','😐',this);closeModal()">😐<small>Okay</small></button>
+      <button class="mood" onclick="chooseMood('Low','😔',this);closeModal()">😔<small>Low</small></button>
+      <button class="mood" onclick="chooseMood('Rough','😣',this);closeModal()">😣<small>Rough</small></button>
+    </div>
+    <label>Anything else you want Novie to remember?
+      <textarea id="checkNote" placeholder="Optional..."></textarea>
+    </label>
+    <button class="submit" style="margin-top:10px" onclick="saveCheckin()">Save check-in</button>
+  `);
+}
+
+function saveCheckin(){
+  data.checkNote=document.getElementById("checkNote").value;
+  data.xp += 5;
+  save();
+  closeModal();
+  showToast("🌱 Check-in saved.");
+}
+
+function mysteryQuestion(){
+  const questions=[
+    "What is something you have outgrown but still carry with you?",
+    "What makes you feel most like yourself?",
+    "If today had a soundtrack, what song would be playing?",
+    "What is something you wish people understood about you?",
+    "Who makes you feel safe enough to be completely yourself?",
+    "What is one tiny thing you could do today that future-you would appreciate?",
+    "Would you rather have a surprise adventure or a perfectly planned day?",
+    "What is something you are proud of that you rarely talk about?"
+  ];
+
+  const q=questions[Math.floor(Math.random()*questions.length)];
+
+  openModal(`
+    <div style="font-size:42px">🎁</div>
+    <h2>Mystery Question</h2>
+    <p style="font-size:20px;color:var(--forest);font-weight:800">${q}</p>
+    <textarea id="mysteryAnswer" placeholder="Your answer..."></textarea>
+    <button class="submit" style="margin-top:10px" onclick="saveMystery()">Save reflection +10 XP</button>
+  `);
+}
+
+function saveMystery(){
+  data.xp += 10;
+  save();
+  closeModal();
+  showToast("🎁 Reflection saved. +10 XP");
+}
+
+function loveIdea(){
+  const ideas=[
+    "Send someone a message telling them one specific thing you appreciate about them.",
+    "Ask someone: “What is something you wish we did together more often?”",
+    "Leave a surprise note somewhere they will find it.",
+    "Give someone your full attention for 10 minutes without your phone.",
+    "Tell someone a favorite memory you have with them.",
+    "Ask someone what they need today instead of assuming.",
+    "Do one small task for someone you care about without being asked.",
+    "Tell someone: “I am glad you are in my life.”"
+  ];
+
+  openModal(`
+    <div style="font-size:42px">❤️</div>
+    <h2>Today's Love Idea</h2>
+    <p style="font-size:19px;color:var(--forest);font-weight:800">${ideas[Math.floor(Math.random()*ideas.length)]}</p>
+    <button class="submit" onclick="data.xp+=10;save();closeModal();showToast('❤️ +10 XP for choosing connection!')">I did it ✨</button>
+  `);
+}
+
+function communicationLab(){
+  const situations=[
+    ["I feel ignored","“I feel like I have been having a hard time getting your attention lately. Can we talk about what is going on?”"],
+    ["I need more affection","“I have been missing closeness lately. Could we make a little more time for affection?”"],
+    ["I am angry","“I am upset and I do not want to say something I regret. Can we pause and come back to this?”"],
+    ["I need a boundary","“I care about you, and I also need to be honest about what I am comfortable with.”"],
+    ["I need an apology","“What happened hurt me. What I need most right now is for you to understand why.”"],
+    ["I want to reconnect","“I do not like feeling distant from you. What would help us feel close again?”"],
+    ["I feel misunderstood","“I do not think I explained myself well. Can I try again?”"],
+    ["I want to celebrate them","“I noticed how hard you have been working, and I want you to know I see it.”"]
+  ];
+
+  const html=situations.map((s,i)=>`
+    <button class="choice" style="width:100%;margin-bottom:8px" onclick="communicationChoice(${i})">
+      💬 ${s[0]}
+    </button>
+  `).join("");
+
+  window.commSituations=situations;
+
+  openModal(`
+    <h2>💬 Communication Lab</h2>
+    <p>Choose a real-life situation. Novie can eventually use your communication patterns to personalize suggestions.</p>
+    ${html}
+    <hr style="border:0;border-top:1px solid #e0e7e2;margin:20px 0">
+    <button class="submit" onclick="openMagi()">🤖 Ask MAGI to help me say something</button>
+  `);
+}
+
+function communicationChoice(i){
+  const s=window.commSituations[i];
+
+  openModal(`
+    <h2>💬 ${s[0]}</h2>
+    <p><strong>Gentle starting point:</strong></p>
+    <div class="card" style="background:var(--mint)">
+      ${s[1]}
+    </div>
+    <h3 style="margin-top:20px">Try another style</h3>
+    <div class="prompt-grid">
+      <button class="choice" onclick="styleMessage('Gentle',${i})">🌿 Gentle</button>
+      <button class="choice" onclick="styleMessage('Direct',${i})">🎯 Direct</button>
+      <button class="choice" onclick="styleMessage('Loving',${i})">❤️ Loving</button>
+      <button class="choice" onclick="styleMessage('Firm boundary',${i})">🛡️ Firm boundary</button>
+      <button class="choice" onclick="styleMessage('Short text',${i})">📱 Short text</button>
+      <button class="choice" onclick="styleMessage('Repair-focused',${i})">🤝 Repair-focused</button>
+    </div>
+  `);
+}
+
+function styleMessage(style,i){
+  const s=window.commSituations[i];
+  const templates={
+    "Gentle":s[1],
+    "Direct":"I need to talk about this because it matters to me. Can we have an honest conversation?",
+    "Loving":"I care about you and about us, which is why I want to talk about this instead of letting it build up.",
+    "Firm boundary":"I care about our relationship, but I need to be clear about what I can and cannot accept.",
+    "Short text":"Can we talk? Something has been on my mind and I would rather talk about it than hold it in.",
+    "Repair-focused":"I do not want this disagreement to create more distance between us. I want us to understand each other and find a way forward."
+  };
+
+  openModal(`
+    <h2>${style} version</h2>
+    <div class="card" style="background:var(--mint);font-size:18px;line-height:1.6">
+      ${templates[style]}
+    </div>
+    <p style="color:var(--muted)">This is a starting point, not a script. Make it sound like you.</p>
+    <button class="submit" onclick="openMagi()">🤖 Personalize with MAGI</button>
+  `);
+}
+
+function relationshipCheck(){
+  openModal(`
+    <h2>🤝 Relationship Check-In</h2>
+    <p>Choose one thing to talk about together tonight.</p>
+    <div class="form">
+      <button class="choice" onclick="showToast('💗 Ask: What made you feel loved this week?')">❤️ What made you feel loved?</button>
+      <button class="choice" onclick="showToast('💬 Ask: Is there anything you need from me?')">💬 What do you need from me?</button>
+      <button class="choice" onclick="showToast('🎉 Ask: What should we celebrate?')">🎉 What should we celebrate?</button>
+      <button class="choice" onclick="showToast('🌱 Ask: What could we grow together?')">🌱 What could we grow?</button>
+    </div>
+  `);
+}
+
+function repairPrompt(){
+  openModal(`
+    <h2>🤝 Repair & Reconnect</h2>
+    <p>When emotions are high, the goal is not to “win.” It is to create enough safety to understand each other.</p>
+    <div class="card" style="background:var(--mint)">
+      <strong>Try:</strong><br><br>
+      “I know we are both upset. I do not want us to hurt each other more. Can we slow down and try again?”
+    </div>
+    <button class="submit" onclick="openMagi()">✨ Help me personalize this</button>
+  `);
+}
+
+function wouldYouRather(){
+  const pairs=[
+    ["Have a spontaneous road trip 🚗","Have a perfectly planned vacation ✈️"],
+    ["Be able to read minds 🧠","Always know what to say 💬"],
+    ["Have a cozy night in 🛋️","Go on a surprise adventure 🌎"],
+    ["Receive a handwritten letter 💌","Receive a surprise gift 🎁"],
+    ["Know your future 🔮","Be able to change your past ⏳"],
+    ["Have one amazing friendship 🧑‍🤝‍🧑","Have a huge social circle 🎉"]
+  ];
+
+  const p=pairs[Math.floor(Math.random()*pairs.length)];
+
+  openModal(`
+    <div style="font-size:42px">🎮</div>
+    <h2>Would You Rather?</h2>
+    <p>Pick one — then ask someone else what they chose.</p>
+    <div class="choice-grid">
+      <button class="choice" onclick="gameAnswer('${p[0]}')">${p[0]}</button>
+      <button class="choice" onclick="gameAnswer('${p[1]}')">${p[1]}</button>
+    </div>
+  `);
+}
+
+function gameAnswer(answer){
+  data.xp+=5;
+  save();
+  openModal(`
+    <h2>🎉 You chose:</h2>
+    <p style="font-size:22px;color:var(--forest);font-weight:800">${answer}</p>
+    <div class="card" style="background:var(--gold)">
+      Now ask someone else. Their explanation may be more interesting than their answer.
+    </div>
+    <button class="submit" onclick="closeModal()">Keep playing</button>
+  `);
+}
+
+function kidQuestion(){
+  const qs=[
+    "🌈 If you could make tomorrow any color, what color would it be?",
+    "🐶 What animal would be your best friend?",
+    "🎁 If you could give someone one surprise today, what would it be?",
+    "🚀 Where would you go if you could fly anywhere?",
+    "💜 What made you smile today?"
+  ];
+
+  openModal(`
+    <div style="font-size:45px">🌈</div>
+    <h2>Today's Spark</h2>
+    <p style="font-size:20px;color:var(--forest);font-weight:800">${qs[Math.floor(Math.random()*qs.length)]}</p>
+    <textarea placeholder="Your answer..."></textarea>
+    <button class="submit" style="margin-top:10px" onclick="closeModal();showToast('🌈 Spark saved!')">Done ✨</button>
+  `);
+}
+
+function openMagi(){
+  closeModal();
+  showSection("magi",document.querySelectorAll(".nav button")[5]);
+}
+
+function magiPrompt(text){
+  document.getElementById("magiInput").value=text;
+  askMagi();
+}
+
+function askMagi(){
+  const input=document.getElementById("magiInput").value.trim();
+
+  if(!input){
+    showToast("✨ Tell MAGI what you need first.");
+    return;
+  }
+
+  let response="";
+
+  if(input.toLowerCase().includes("calm")){
+    response="Let's make the next minute smaller. Put both feet on the floor, relax your shoulders, and take one slow breath. You do not need to solve the whole situation right now. What is the one thing you need most in this moment?";
+  }else if(input.toLowerCase().includes("positive")){
+    response="Here is your tiny positive challenge: notice one thing that is working, one person who makes your life better, or one moment you would like to remember. It does not have to be a big thing.";
+  }else if(input.toLowerCase().includes("communicat")){
+    response="Before you send anything, try separating three things: what happened, how you felt, and what you need. That makes it easier to communicate without turning a feeling into an accusation.";
+  }else if(input.toLowerCase().includes("healing")){
+    response="Healing does not always mean feeling better immediately. Sometimes it means becoming honest about what hurt, what you needed, and what you want to do differently next time.";
+  }else{
+    response="I hear you. Start by asking yourself: What am I feeling? What do I need? What part of this is actually in my control? You do not have to figure everything out at once.";
+  }
+
+  document.getElementById("magiResponse").innerHTML=`
+    <div class="card" style="background:rgba(255,255,255,.13);color:white;border-color:rgba(255,255,255,.15)">
+      <strong>✨ MAGI</strong>
+      <p style="color:rgba(255,255,255,.88);font-size:15px">${response}</p>
+      <button class="primary" onclick="openJournal()">📝 Reflect on this</button>
+    </div>
+  `;
+
+  data.xp+=5;
+  save();
+}
+
+function openJournal(){
+  openModal(`
+    <h2>📝 Private Reflection</h2>
+    <p>Write whatever comes to mind. This first prototype saves information only in this browser.</p>
+    <textarea id="journalText" style="min-height:220px" placeholder="Write here...">${data.journal || ""}</textarea>
+    <button class="submit" style="margin-top:10px" onclick="saveJournal()">Save reflection</button>
+  `);
+}
+
+function saveJournal(){
+  data.journal=document.getElementById("journalText").value;
+  data.xp+=5;
+  save();
+  closeModal();
+  showToast("📝 Reflection saved on this device.");
+}
+
+function moonInfo(){
+  openModal(`
+    <div style="font-size:48px">🌕</div>
+    <h2>Moon & Full Moon</h2>
+    <p>
+      Novie can eventually combine the current moon phase with optional
+      reflection prompts and astrology. The goal is not to tell you that the
+      moon <em>causes</em> your emotions, but to give you another lens for
+      reflection and curiosity.
+    </p>
+    <div class="card" style="background:var(--lavender)">
+      <strong>🌕 Full Moon Reflection</strong>
+      <p>What feels especially visible in your life right now?</p>
+      <p>What are you ready to release, change or understand differently?</p>
+    </div>
+    <div class="card" style="background:var(--mint);margin-top:10px">
+      <strong>🔬 Novie Science Note</strong>
+      <p>Astrology is presented as an optional reflective experience, separate from evidence-based relationship and wellbeing information.</p>
+    </div>
+  `);
+}
+
+function cycleInfo(){
+  openModal(`
+    <div style="font-size:48px">🌸</div>
+    <h2>Cycle & Body Awareness</h2>
+    <p>
+      This will become a private, optional part of Novie for users who want
+      to track menstrual cycles, symptoms, energy, emotions, sleep, cravings,
+      notes and relationship context.
+    </p>
+
+    <div class="cycle-ring">
+      <div class="cycle-center">
+        <strong>Day 12</strong>
+        <span>Example</span>
+      </div>
+    </div>
+
+    <div class="card" style="background:var(--pink)">
+      <strong>🌷 What Novie could eventually notice</strong>
+      <p>Patterns in mood, energy, symptoms and notes over multiple cycles.</p>
+      <p>For a partner, users could optionally choose what information to share. Nothing should be shared automatically.</p>
+    </div>
+
+    <button class="submit" onclick="closeModal();showToast('🌸 Cycle tools are marked as private and optional.')">Got it</button>
+  `);
+}
+
+function showOnboardingIfNeeded(){
+  if(!data.name){
+    document.getElementById("onboarding").classList.add("show");
+  }
+}
+
+updateUI();
+showOnboardingIfNeeded();
+
+</script>
+</body>
+</html>
