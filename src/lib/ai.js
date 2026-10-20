@@ -1,4 +1,4 @@
-import { MOODS, REFLECTION_QUESTIONS, CONNECTION_QUESTIONS, SCIENCE_LESSONS, MOON_PHASES } from './constants.js'
+import { MOODS, REFLECTION_QUESTIONS, CONNECTION_QUESTIONS, SCIENCE_LESSONS, MOON_PHASES, AFFIRMATIONS, EMOTIONS_CREATE, CREATIVE_ACTIVITIES } from './constants.js'
 
 // Context-aware AI reply generation
 // Uses the user's check-ins, journal, goals, and profile to build personalized responses
@@ -175,4 +175,130 @@ export function getMoonPhase(date = new Date()) {
   const phaseNum = ((days % synodic) + synodic) % synodic
   const index = Math.floor((phaseNum / synodic) * 8) % 8
   return phases[index]
+}
+
+export function getDailyAffirmation() {
+  const dayIndex = Math.floor(Date.now() / 86400000) % AFFIRMATIONS.length
+  return AFFIRMATIONS[dayIndex]
+}
+
+export function recommendPlant(ctx) {
+  if (!ctx) return null
+  const reasons = []
+  let recommended = 'seedling'
+
+  if (ctx.interestNames?.includes('Nature') || ctx.interestNames?.includes('Outdoors')) {
+    recommended = 'tree'
+    reasons.push('Your interest in nature and the outdoors pairs well with a tree.')
+  } else if (ctx.interestNames?.includes('Art') || ctx.interestNames?.includes('Creativity')) {
+    recommended = 'flower'
+    reasons.push('Your creative interests match a flowering plant that blooms expressively.')
+  } else if (ctx.interestNames?.includes('Meditation') || ctx.interestNames?.includes('Writing')) {
+    recommended = 'bonsai'
+    reasons.push('Your reflective interests suit a bonsai — patient, intentional growth.')
+  } else if (ctx.interestNames?.includes('Fitness') || ctx.interestNames?.includes('Animals')) {
+    recommended = 'cactus'
+    reasons.push('Your active interests match a resilient cactus that thrives with energy.')
+  } else if (ctx.goalTitles?.length > 2) {
+    recommended = 'vine'
+    reasons.push('You are pursuing multiple goals — a vine climbs in many directions, like you.')
+  } else if (ctx.checkinCount < 3) {
+    recommended = 'seedling'
+    reasons.push('You are just starting. A seedling grows alongside you.')
+  } else {
+    recommended = 'leafy'
+    reasons.push('You are building steadily. A leafy plant fills out as you do.')
+  }
+
+  return { plantId: recommended, reasons }
+}
+
+export function getCreativeSuggestion(emotionId, ctx) {
+  const emotion = EMOTIONS_CREATE.find(e => e.id === emotionId)
+  if (!emotion) return null
+  const activity = CREATIVE_ACTIVITIES.find(a => a.id === emotion.suggestion)
+  return {
+    emotion,
+    activity,
+    reason: emotion.reason,
+  }
+}
+
+export function getPatternExplanation(ctx) {
+  if (!ctx || ctx.checkinCount < 3) {
+    return null
+  }
+  const explanations = []
+  const recent = ctx.checkins?.slice(0, 5)
+  if (!recent || recent.length < 3) return null
+
+  const avgEnergy = recent.reduce((s, c) => s + (c.energy || 50), 0) / recent.length
+  const avgStress = recent.reduce((s, c) => s + (c.stress || 30), 0) / recent.length
+
+  if (avgEnergy < 40) {
+    explanations.push({
+      type: 'energy',
+      title: 'Energy has been lower',
+      observation: `Your average energy across ${recent.length} recent check-ins is ${Math.round(avgEnergy)}%.`,
+      interpretation: 'This could reflect poor sleep, stress, or a demanding period. It is an observation, not a diagnosis.',
+      suggestion: 'Consider whether rest, hydration, or a smaller to-do list might help. A check-in with a healthcare provider is always valid if low energy persists.',
+      confidence: 'moderate',
+    })
+  }
+
+  if (avgStress > 65) {
+    explanations.push({
+      type: 'stress',
+      title: 'Stress has been running high',
+      observation: `Your average stress across ${recent.length} recent check-ins is ${Math.round(avgStress)}%.`,
+      interpretation: 'Chronic stress can affect sleep, mood, and relationships. This pattern is worth paying attention to.',
+      suggestion: 'A tiny reset, slower breathing, or simplifying one commitment might help. If stress feels unmanageable, reaching out to someone you trust is a good step.',
+      confidence: 'moderate',
+    })
+  }
+
+  const moodCounts = {}
+  recent.forEach(c => { if (c.mood) moodCounts[c.mood] = (moodCounts[c.mood] || 0) + 1 })
+  const topMood = Object.entries(moodCounts).sort((a, b) => b[1] - a[1])[0]
+  if (topMood && topMood[1] >= 2) {
+    explanations.push({
+      type: 'mood',
+      title: `${topMood[0]} appears most often`,
+      observation: `You selected "${topMood[0]}" in ${topMood[1]} of your last ${recent.length} check-ins.`,
+      interpretation: 'A recurring mood can be a clue about what is present in your life right now. It is not a permanent label.',
+      suggestion: 'Consider what situations tend to accompany this feeling. Journaling about it might reveal a pattern worth understanding.',
+      confidence: topMood[1] >= 3 ? 'higher' : 'low',
+    })
+  }
+
+  return explanations.length > 0 ? explanations : null
+}
+
+export function getLearningSuggestion(ctx) {
+  if (!ctx) return null
+  const suggestions = []
+
+  if (ctx.checkinCount >= 3 && ctx.stress > 60) {
+    suggestions.push({ pathId: 'emotional_awareness', reason: 'Your stress has been elevated — learning to notice and name what you feel can create more space to respond.' })
+  }
+  if (ctx.goalTitles?.length > 0) {
+    suggestions.push({ pathId: 'habits_growth', reason: 'You are working on goals — understanding how habits form can help you make real progress.' })
+  }
+  if (ctx.interestNames?.includes('Astrology')) {
+    suggestions.push({ pathId: 'astrology_basics', reason: 'You are curious about astrology — start with the foundations.' })
+  }
+  if (ctx.interestNames?.includes('Art') || ctx.interestNames?.includes('Creativity')) {
+    suggestions.push({ pathId: 'creativity', reason: 'Your creative interests open a path into mindful expression.' })
+  }
+  if (connectionsCount(ctx) > 0) {
+    suggestions.push({ pathId: 'communication', reason: 'You have connections in Novie — communication skills can deepen those relationships.' })
+  }
+  if (suggestions.length === 0) {
+    suggestions.push({ pathId: 'emotional_awareness', reason: 'A great starting point for understanding yourself better.' })
+  }
+  return suggestions
+}
+
+function connectionsCount(ctx) {
+  return ctx.connection !== null && ctx.connection !== undefined ? 1 : 0
 }

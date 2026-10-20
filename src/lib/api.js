@@ -244,3 +244,40 @@ export async function awardXp(amount, activityType, description) {
     xp_earned: amount,
   })
 }
+
+// Artwork
+export async function getArtwork(limit = 50) {
+  const { data, error } = await supabase.from('artwork').select('*').order('created_at', { ascending: false }).limit(limit)
+  if (error) console.error('getArtwork', error)
+  return data || []
+}
+
+export async function addArtwork(art) {
+  const { data, error } = await supabase.from('artwork').insert(art).select().maybeSingle()
+  if (error) console.error('addArtwork', error)
+  return data
+}
+
+export async function deleteArtwork(id) {
+  const { error } = await supabase.from('artwork').delete().eq('id', id)
+  if (error) console.error('deleteArtwork', error)
+}
+
+// Garden preferences
+export async function getGardenPrefs() {
+  const { data, error } = await supabase.from('garden_preferences').select('*').limit(1).maybeSingle()
+  if (error) console.error('getGardenPrefs', error)
+  return data
+}
+
+export async function saveGardenPrefs(prefs) {
+  const { data: existing } = await supabase.from('garden_preferences').select('id').limit(1).maybeSingle()
+  if (existing) {
+    const { data, error } = await supabase.from('garden_preferences').update(prefs).eq('id', existing.id).select().maybeSingle()
+    if (error) console.error('saveGardenPrefs', error)
+    return data
+  }
+  const { data, error } = await supabase.from('garden_preferences').insert(prefs).select().maybeSingle()
+  if (error) console.error('saveGardenPrefs', error)
+  return data
+}

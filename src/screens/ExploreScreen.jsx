@@ -4,12 +4,14 @@ import { EXPLORE_TILES, ZODIAC_SIGNS, SCIENCE_LESSONS, COMMUNICATION_STYLES, KID
 import { Modal, Card, PageHead, Tile } from '../components/ui.jsx'
 import { getZodiacSign, getMoonPhase, rewriteMessage, buildContext, generateInsight } from '../lib/ai.js'
 import NovieModal from '../components/NovieModal.jsx'
+import CreateModal from '../components/CreateModal.jsx'
 import * as api from '../lib/api.js'
 
 export default function ExploreScreen({ onNav }) {
   const { profile, checkins, journal, goals, reflections, memories, interests, awardXp, showToast } = useApp()
   const [activeModal, setActiveModal] = useState(null)
   const [novieOpen, setNovieOpen] = useState(false)
+  const [createOpen, setCreateOpen] = useState(false)
 
   // Astrology state
   const [birthDate, setBirthDate] = useState(profile?.birth_date || '')
@@ -68,6 +70,21 @@ export default function ExploreScreen({ onNav }) {
               }} />
           ))}
         </div>
+      </section>
+
+      <section className="section">
+        <div className="sectionTitle">
+          <h2>Create</h2>
+          <span>For how you feel</span>
+        </div>
+        <Card className="pattern" style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+          <div style={{ fontSize: '48px' }}>🎨</div>
+          <div style={{ flex: '1', minWidth: '200px' }}>
+            <strong style={{ fontSize: '18px', display: 'block' }}>Create for how you feel</strong>
+            <p className="muted" style={{ marginTop: '4px' }}>Pick an emotion or just start drawing. Mandala, nature, free canvas, and more. No artistic ability needed.</p>
+          </div>
+          <button className="primary" onClick={() => setCreateOpen(true)}>Start creating →</button>
+        </Card>
       </section>
 
       {/* Astrology Modals */}
@@ -250,6 +267,7 @@ export default function ExploreScreen({ onNav }) {
       </Modal>
 
       <NovieModal open={novieOpen} onClose={() => setNovieOpen(false)} onNav={onNav} />
+      <CreateModal open={createOpen} onClose={() => setCreateOpen(false)} />
     </>
   )
 }

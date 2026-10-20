@@ -150,3 +150,99 @@ export const PLAY_TILES = [
   { icon: '🗣️', title: 'Question deck', desc: 'Questions for partners, friends or family.', screen: 'questions', gradient: 'linear-gradient(145deg,#fff,#fff8e9)' },
   { icon: '🔥', title: 'Mini challenge', desc: 'Do one small thing together.', screen: 'challenge', gradient: 'linear-gradient(145deg,#fff,#fff8e9)' },
 ]
+
+export const PLANT_TYPES = [
+  { id: 'seedling', name: 'Seedling', icon: '🌱', desc: 'A young sprout just beginning. Grows with you from the start.' },
+  { id: 'leafy', name: 'Leafy Plant', icon: '🌿', desc: 'Lush green leaves that fill out as you grow.' },
+  { id: 'flower', name: 'Flower', icon: '🌷', desc: 'Blooms that open as you progress. Colorful and expressive.' },
+  { id: 'tree', name: 'Tree', icon: '🌳', desc: 'Strong and steady. Deep roots, wide branches.' },
+  { id: 'vine', name: 'Vine', icon: '🍃', desc: 'Climbs and spreads, finding new paths as you explore.' },
+  { id: 'herb', name: 'Herb', icon: '🌾', desc: 'Small, practical, and grounding. Grows close to the earth.' },
+  { id: 'bonsai', name: 'Bonsai', icon: '🪴', desc: 'Patient and intentional. Reflects careful, steady growth.' },
+  { id: 'cactus', name: 'Cactus', icon: '🌵', desc: 'Resilient and self-sufficient. Thrives in tough conditions.' },
+  { id: 'mushroom', name: 'Mushroom', icon: '🍄', desc: 'Quiet, connected, and part of something larger underground.' },
+]
+
+export const SEASONAL_THEMES = [
+  { id: 'none', name: 'No seasonal theme', icon: '🌿', desc: 'Your usual plant, no seasonal decorations.' },
+  { id: 'autumn', name: 'Autumn', icon: '🍂', desc: 'Pumpkins, autumn leaves, and warm harvest colors.' },
+  { id: 'halloween', name: 'Halloween', icon: '🎃', desc: 'Pumpkin patches and playful spooky garden fun.' },
+  { id: 'winter', name: 'Winter', icon: '❄️', desc: 'Snow, evergreens, and quiet winter stillness.' },
+  { id: 'christmas', name: 'Christmas', icon: '🎄', desc: 'Christmas trees, lights, and festive greenery.' },
+  { id: 'spring', name: 'Spring', icon: '🌸', desc: 'Seedlings, blossoms, and fresh new growth.' },
+  { id: 'summer', name: 'Summer', icon: '🌻', desc: 'Sunflowers, bright blooms, and warm sunshine.' },
+]
+
+export const PLANT_STAGES = [
+  { minLeaves: 1, stage: 0, label: 'Seed', icon: '🌰' },
+  { minLeaves: 2, stage: 1, label: 'Sprout', icon: '🌱' },
+  { minLeaves: 4, stage: 2, label: 'Young plant', icon: '🌿' },
+  { minLeaves: 7, stage: 3, label: 'Growing', icon: '☘️' },
+  { minLeaves: 10, stage: 4, label: 'Mature', icon: '🌳' },
+  { minLeaves: 15, stage: 5, label: 'Flourishing', icon: '🌸' },
+  { minLeaves: 20, stage: 6, label: 'Abundant', icon: '🌺' },
+]
+
+export const EMOTIONS_CREATE = [
+  { id: 'overwhelmed', label: 'Overwhelmed', icon: '🌪️', suggestion: 'mandala', reason: 'Repetitive patterns can give your mind something simple and steady to focus on.' },
+  { id: 'peaceful', label: 'Peaceful', icon: '🌤️', suggestion: 'nature', reason: 'A nature scene can extend the calm you are already feeling.' },
+  { id: 'sad', label: 'Sad', icon: '🌧️', suggestion: 'free', reason: 'Sometimes there are no right words. Drawing lets you express without naming.' },
+  { id: 'hopeful', label: 'Hopeful', icon: '🌱', suggestion: 'tree', reason: 'Drawing a growing thing can mirror the hope you are feeling.' },
+  { id: 'restless', label: 'Restless', icon: '⚡', suggestion: 'geometric', reason: 'Structured shapes can channel restless energy into something contained.' },
+  { id: 'happy', label: 'Happy', icon: '☀️', suggestion: 'free', reason: 'When you feel good, free drawing lets you play without rules.' },
+  { id: 'lonely', label: 'Lonely', icon: '🌙', suggestion: 'coloring', reason: 'Coloring a calming scene can be gentle company when you feel alone.' },
+  { id: 'frustrated', label: 'Frustrated', icon: '🔥', suggestion: 'free', reason: 'Bold strokes and any colors you choose can help release frustration safely.' },
+  { id: 'curious', label: 'Curious', icon: '✨', suggestion: 'moon', reason: 'A celestial scene matches the wonder and curiosity you are feeling.' },
+  { id: 'unsure', label: 'Unsure what I feel', icon: '🌫️', suggestion: 'free', reason: 'You do not need to name it. Draw whatever comes and see what emerges.' },
+]
+
+export const CREATIVE_ACTIVITIES = [
+  { id: 'free', label: 'Free drawing', icon: '🎨', desc: 'An open canvas. Draw whatever comes to mind.' },
+  { id: 'mandala', label: 'Mandala', icon: '🌀', desc: 'Symmetrical, repetitive patterns for focus and calm.' },
+  { id: 'nature', label: 'Nature scene', icon: '🌲', desc: 'Trees, mountains, flowers, and the outdoors.' },
+  { id: 'coloring', label: 'Coloring page', icon: '🦋', desc: 'Mindful coloring with gentle prompts.' },
+  { id: 'tree', label: 'Tree illustration', icon: '🌳', desc: 'Draw a tree — its roots, trunk, and branches.' },
+  { id: 'geometric', label: 'Geometric patterns', icon: '🔷', desc: 'Shapes, symmetry, and structured design.' },
+  { id: 'moon', label: 'Celestial scene', icon: '🌙', desc: 'Moons, stars, constellations, and cosmic themes.' },
+]
+
+export const DRAWING_COLORS = [
+  '#243b34', '#4f8d69', '#6aa37c', '#b6d7af', '#dcefe1',
+  '#e8555e', '#f7a8b8', '#f7dce5', '#ffd700', '#f4dc96',
+  '#5b8def', '#dceef7', '#9b6dd9', '#ece3fa', '#ff8c42',
+  '#f9e0cc', '#8b6f47', '#c4b49a', '#e0e0e0', '#ffffff',
+]
+
+export const WORLD_MAP_DESTINATIONS = [
+  { id: 'seedling_grove', name: 'Seedling Grove', icon: '🌱', desc: 'Emotional awareness, check-ins, self-discovery, and personal foundations.', color: '#e9f7ed', links: ['today', 'reflection', 'habits'] },
+  { id: 'river_understanding', name: 'River of Understanding', icon: '🌊', desc: 'Feelings, stress, needs, values, communication, boundaries, and reflection.', color: '#dceef7', links: ['communication', 'patterns', 'journal'] },
+  { id: 'celestial_observatory', name: 'Celestial Observatory', icon: '🔮', desc: 'Astrology, lunar cycles, astronomy, and cosmic traditions.', color: '#ece3fa', links: ['astrology', 'moon'] },
+  { id: 'village_connection', name: 'Village of Connection', icon: '🏘️', desc: 'Friendship, family, relationships, communication, and conflict repair.', color: '#fff0f4', links: ['connect', 'questions', 'compatibility'] },
+  { id: 'creative_woodland', name: 'Creative Woodland', icon: '🎨', desc: 'Drawing, mindful coloring, journaling, imagination, and creative expression.', color: '#fff4e3', links: ['create', 'journal'] },
+  { id: 'family_garden', name: 'Family Garden', icon: '👨‍👩‍👧', desc: 'Family activities, emotional learning, gratitude, and shared goals.', color: '#fff1d9', links: ['family', 'kids'] },
+  { id: 'wisdom_library', name: 'Wisdom Library', icon: '📚', desc: 'Deeper learning paths, faith and spirituality, psychology, and education.', color: '#f3edfd', links: ['science', 'wellness'] },
+]
+
+export const AFFIRMATIONS = [
+  'You are allowed to take up space in your own life.',
+  'Rest is not the opposite of progress.',
+  'You do not have to earn the right to be gentle with yourself.',
+  'Noticing what you feel is already a form of growth.',
+  'You can change your mind without betraying who you are.',
+  'Small steps count. So do pauses.',
+  'You are not behind. You are on your own timeline.',
+  'Curiosity is a valid reason to explore something new.',
+  'You can hold a difficult feeling without becoming it.',
+  'Asking for what you need is not demanding too much.',
+  'You are allowed to outgrow what no longer fits.',
+  'Being unsure is not the same as being lost.',
+]
+
+export const LEARNING_PATHS = [
+  { id: 'emotional_awareness', title: 'Emotional Awareness', icon: '🌊', dest: 'river_understanding', lessons: ['Notice and name what you feel', 'The difference between feelings and reactions', 'Why stress narrows what you can hear', 'Creating space between feeling and action'] },
+  { id: 'communication', title: 'Communication Skills', icon: '💬', dest: 'village_connection', lessons: ['Listening to understand, not to reply', 'Expressing needs without blame', 'Repair after conflict', 'Boundaries as care, not walls'] },
+  { id: 'habits_growth', title: 'Habits and Growth', icon: '🔁', dest: 'seedling_grove', lessons: ['Why small beats big', 'Designing a habit you can actually keep', 'What to do when you miss a day', 'Identity-based habits'] },
+  { id: 'astrology_basics', title: 'Astrology Basics', icon: '🔮', dest: 'celestial_observatory', lessons: ['Sun, Moon, and Rising — what they mean', 'Elements and modalities', 'Reading a birth chart', 'Moon phases as reflection rhythms'] },
+  { id: 'creativity', title: 'Creative Expression', icon: '🎨', dest: 'creative_woodland', lessons: ['Drawing as a way to feel', 'Color and mood', 'Mandalas and mindfulness', 'No wrong way to make art'] },
+  { id: 'family_connection', title: 'Family Connection', icon: '👨‍👩‍👧', dest: 'family_garden', lessons: ['Emotional vocabulary for kids', 'Gratitude practices', 'Listening exercises', 'Shared family goals'] },
+]

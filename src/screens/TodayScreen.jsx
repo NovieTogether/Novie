@@ -1,20 +1,23 @@
 import { useState, useMemo } from 'react'
 import { useApp } from '../context/AppContext.jsx'
 import { MOODS } from '../lib/constants.js'
-import { buildContext, generateInsight, getDailyReflection } from '../lib/ai.js'
+import { buildContext, generateInsight, getDailyReflection, getDailyAffirmation } from '../lib/ai.js'
 import { Modal, Card } from '../components/ui.jsx'
 import NovieModal from '../components/NovieModal.jsx'
 import CheckInModal from '../components/CheckInModal.jsx'
+import CreateModal from '../components/CreateModal.jsx'
 import * as api from '../lib/api.js'
 
 export default function TodayScreen({ onNav }) {
   const { profile, checkins, goals, journal, reflections, memories, interests, awardXp, showToast, refreshProfile, refreshCheckins } = useApp()
   const [novieOpen, setNovieOpen] = useState(false)
   const [checkinOpen, setCheckinOpen] = useState(false)
+  const [createOpen, setCreateOpen] = useState(false)
 
   const ctx = useMemo(() => buildContext({ profile, checkins, journal, goals, reflections, memories, interests }), [profile, checkins, journal, goals, reflections, memories, interests])
   const insights = useMemo(() => generateInsight(ctx), [ctx])
   const dailyReflection = useMemo(() => getDailyReflection(ctx), [ctx])
+  const affirmation = useMemo(() => getDailyAffirmation(), [])
 
   const name = profile?.name || ''
   const hello = name ? `Good to see you, ${name}.` : 'Welcome to Novie.'
@@ -45,6 +48,7 @@ export default function TodayScreen({ onNav }) {
           <div className="actions">
             <button className="primary" onClick={() => setCheckinOpen(true)}>Check in · +15 XP</button>
             <button className="secondary" onClick={() => setNovieOpen(true)}>✦ Ask Novie</button>
+          <button className="secondary" onClick={() => setCreateOpen(true)}>🎨 Create</button>
           </div>
         </div>
         <div className="treeCard">
@@ -84,6 +88,16 @@ export default function TodayScreen({ onNav }) {
             </Card>
           ))}
         </div>
+      </section>
+
+      <section className="section">
+        <div className="sectionTitle">
+          <h2>Today's affirmation</h2>
+        </div>
+        <Card className="pattern">
+          <span className="kicker">DAILY AFFIRMATION</span>
+          <h2 style={{ fontSize: '22px', marginTop: '8px' }}>{affirmation}</h2>
+        </Card>
       </section>
 
       <section className="section">
@@ -128,6 +142,7 @@ export default function TodayScreen({ onNav }) {
 
       <CheckInModal open={checkinOpen} onClose={() => setCheckinOpen(false)} />
       <NovieModal open={novieOpen} onClose={() => setNovieOpen(false)} onNav={onNav} />
+      <CreateModal open={createOpen} onClose={() => setCreateOpen(false)} />
     </>
   )
 }

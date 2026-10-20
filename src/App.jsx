@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { AppProvider, useApp } from './context/AppContext.jsx'
 import { Toast } from './components/ui.jsx'
 import TopBar from './components/TopBar.jsx'
@@ -9,6 +9,7 @@ import GrowScreen from './screens/GrowScreen.jsx'
 import ExploreScreen from './screens/ExploreScreen.jsx'
 import ConnectScreen from './screens/ConnectScreen.jsx'
 import PlayScreen from './screens/PlayScreen.jsx'
+import WorldMapScreen from './screens/WorldMapScreen.jsx'
 import './styles.css'
 
 function AppInner() {
@@ -41,6 +42,7 @@ function AppInner() {
           {tab === 'explore' && <ExploreScreen onNav={nav} />}
           {tab === 'connect' && <ConnectScreen onNav={nav} />}
           {tab === 'play' && <PlayScreen onNav={nav} />}
+          {tab === 'world' && <WorldMapScreen onNav={nav} />}
         </main>
       </div>
       <BottomNav tab={tab} onNav={nav} />

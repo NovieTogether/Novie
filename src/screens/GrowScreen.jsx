@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useApp } from '../context/AppContext.jsx'
 import { GROWTH_TILES, REFLECTION_QUESTIONS, HABIT_SUGGESTIONS } from '../lib/constants.js'
 import { Modal, Card, PageHead } from '../components/ui.jsx'
+import GardenModal from '../components/GardenModal.jsx'
+import MemoryModal from '../components/MemoryModal.jsx'
 import * as api from '../lib/api.js'
 
 export default function GrowScreen({ onNav }) {
@@ -14,6 +16,8 @@ export default function GrowScreen({ onNav }) {
   const [journalTitle, setJournalTitle] = useState('')
   const [reflectionAnswer, setReflectionAnswer] = useState('')
   const [habitInput, setHabitInput] = useState('')
+  const [gardenPrefsOpen, setGardenPrefsOpen] = useState(false)
+  const [memoryOpen, setMemoryOpen] = useState(false)
 
   const reflectionQuestion = REFLECTION_QUESTIONS[(reflections.length) % REFLECTION_QUESTIONS.length]
 
@@ -219,6 +223,10 @@ export default function GrowScreen({ onNav }) {
             <div className="miniProgress"><i style={{ width: (xp % 100) + '%' }} /></div>
             <small className="muted">{xp % 100} / 100 XP to next leaf</small>
           </div>
+          <div className="chips" style={{ marginTop: '14px', justifyContent: 'center' }}>
+            <button className="chip" onClick={() => setGardenPrefsOpen(true)}>🌳 Choose plant & theme</button>
+            <button className="chip" onClick={() => setMemoryOpen(true)}>💾 AI memory & privacy</button>
+          </div>
         </Card>
       </section>
 
@@ -353,6 +361,9 @@ export default function GrowScreen({ onNav }) {
           </div>
         )}
       </Modal>
+
+      <GardenModal open={gardenPrefsOpen} onClose={() => setGardenPrefsOpen(false)} />
+      <MemoryModal open={memoryOpen} onClose={() => setMemoryOpen(false)} />
     </>
   )
 }

@@ -4,6 +4,7 @@ const TABS = [
   { id: 'explore', icon: '✦', label: 'Explore' },
   { id: 'connect', icon: '♡', label: 'Connect' },
   { id: 'play', icon: '🎮', label: 'Play' },
+  { id: 'world', icon: '🗺️', label: 'World' },
 ]
 
 export default function BottomNav({ tab, onNav }) {
