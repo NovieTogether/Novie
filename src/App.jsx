@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { AuthProvider, useAuth } from './context/AuthContext.jsx'
 import { AppProvider, useApp } from './context/AppContext.jsx'
 import { Toast } from './components/ui.jsx'
 import TopBar from './components/TopBar.jsx'
 import BottomNav from './components/BottomNav.jsx'
 import Onboarding from './components/Onboarding.jsx'
+import AuthScreen from './components/AuthScreen.jsx'
 import TodayScreen from './screens/TodayScreen.jsx'
 import GrowScreen from './screens/GrowScreen.jsx'
 import ExploreScreen from './screens/ExploreScreen.jsx'
@@ -15,8 +17,20 @@ import './styles.css'
 function AppInner() {
   const [tab, setTab] = useState('today')
   const { profile, loading } = useApp()
+  const { authLoading } = useAuth()
 
   const nav = (t) => { setTab(t); window.scrollTo(0, 0) }
+
+  if (authLoading) {
+    return (
+      <div className="shell" style={{ display: 'grid', placeItems: 'center', minHeight: '80vh' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '60px', marginBottom: '10px' }}>🌱</div>
+          <p>Loading your Novie...</p>
+        </div>
+      </div>
+    )
+  }
 
   if (loading) {
     return (
@@ -56,10 +70,33 @@ function ToastWithCtx() {
   return <Toast message={toast} />
 }
 
+function AppGate() {
+  const { isAuthenticated, authLoading } = useAuth()
+
+  if (authLoading) {
+    return (
+      <div className="shell" style={{ display: 'grid', placeItems: 'center', minHeight: '80vh' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '60px', marginBottom: '10px' }}>🌱</div>
+          <p>Loading your Novie...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return <AuthScreen />
+  }
+
+  return <AppInner />
+}
+
 export default function App() {
   return (
-    <AppProvider>
-      <AppInner />
-    </AppProvider>
+    <AuthProvider>
+      <AppProvider>
+        <AppGate />
+      </AppProvider>
+    </AuthProvider>
   )
 }

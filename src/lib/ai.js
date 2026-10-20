@@ -4,31 +4,49 @@ import { MOODS, REFLECTION_QUESTIONS, CONNECTION_QUESTIONS, SCIENCE_LESSONS, MOO
 // Uses the user's check-ins, journal, goals, and profile to build personalized responses
 // Does NOT fabricate facts, memories, or patterns the user hasn't shared
 
-export function buildContext({ profile, checkins, journal, goals, reflections, memories, interests, habits, artworkCount }) {
+// Default privacy settings — used when no saved settings exist yet.
+// All categories default to enabled EXCEPT astrology, matching the original UI defaults.
+const DEFAULT_PRIVACY = {
+  checkins_enabled: true,
+  journal_enabled: true,
+  goals_enabled: true,
+  interests_enabled: true,
+  astrology_enabled: false,
+  memories_enabled: true,
+  reflections_enabled: true,
+  habits_enabled: true,
+  artwork_enabled: true,
+}
+
+export function buildContext({ profile, checkins, journal, goals, reflections, memories, interests, habits, artworkCount, privacySettings }) {
+  const p = { ...DEFAULT_PRIVACY, ...(privacySettings || {}) }
+
   const ctx = {
     name: profile?.name || '',
     role: profile?.role || '',
-    energy: checkins[0]?.energy ?? null,
-    stress: checkins[0]?.stress ?? null,
-    mood: checkins[0]?.mood ?? null,
-    connection: checkins[0]?.connection ?? null,
-    interestNames: interests?.map(i => i.name) || [],
-    goalTitles: goals?.filter(g => g.status === 'active').map(g => g.title) || [],
-    goalCount: goals?.filter(g => g.status === 'active').length || 0,
-    completedGoals: goals?.filter(g => g.status === 'completed').length || 0,
-    recentJournal: journal?.slice(0, 3).map(j => j.content).join(' ') || '',
-    journalCount: journal?.length || 0,
-    recentReflections: reflections?.slice(0, 3).map(r => r.answer).join(' ') || '',
-    reflectionCount: reflections?.length || 0,
-    memoryContents: memories?.filter(m => m.approved).map(m => m.content) || [],
-    memoryCount: memories?.length || 0,
-    habitNames: habits?.filter(h => h.active).map(h => h.name) || [],
-    habitStreaks: habits?.map(h => h.streak_count || 0) || [],
-    artworkCount: artworkCount || 0,
-    checkinCount: checkins?.length || 0,
+    energy: p.checkins_enabled ? (checkins[0]?.energy ?? null) : null,
+    stress: p.checkins_enabled ? (checkins[0]?.stress ?? null) : null,
+    mood: p.checkins_enabled ? (checkins[0]?.mood ?? null) : null,
+    connection: p.checkins_enabled ? (checkins[0]?.connection ?? null) : null,
+    interestNames: p.interests_enabled ? (interests?.map(i => i.name) || []) : [],
+    goalTitles: p.goals_enabled ? (goals?.filter(g => g.status === 'active').map(g => g.title) || []) : [],
+    goalCount: p.goals_enabled ? (goals?.filter(g => g.status === 'active').length || 0) : 0,
+    completedGoals: p.goals_enabled ? (goals?.filter(g => g.status === 'completed').length || 0) : 0,
+    recentJournal: p.journal_enabled ? (journal?.slice(0, 3).map(j => j.content).join(' ') || '') : '',
+    journalCount: p.journal_enabled ? (journal?.length || 0) : 0,
+    recentReflections: p.reflections_enabled ? (reflections?.slice(0, 3).map(r => r.answer).join(' ') || '') : '',
+    reflectionCount: p.reflections_enabled ? (reflections?.length || 0) : 0,
+    memoryContents: p.memories_enabled ? (memories?.filter(m => m.approved).map(m => m.content) || []) : [],
+    memoryCount: p.memories_enabled ? (memories?.length || 0) : 0,
+    habitNames: p.habits_enabled ? (habits?.filter(h => h.active).map(h => h.name) || []) : [],
+    habitStreaks: p.habits_enabled ? (habits?.map(h => h.streak_count || 0) || []) : [],
+    artworkCount: p.artwork_enabled ? (artworkCount || 0) : 0,
+    checkinCount: p.checkins_enabled ? (checkins?.length || 0) : 0,
     streak: profile?.streak || 0,
     xp: profile?.xp || 0,
-    checkins: checkins,
+    checkins: p.checkins_enabled ? checkins : [],
+    astrologyEnabled: p.astrology_enabled,
+    privacySettings: p,
   }
   return ctx
 }

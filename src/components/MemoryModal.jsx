@@ -12,21 +12,46 @@ const MEMORY_CATEGORIES = [
 ]
 
 const CATEGORY_CONTROLS = [
-  { id: 'checkins', label: 'Check-ins and mood history', desc: 'Energy, stress, mood, and connection data' },
-  { id: 'journal', label: 'Journal entries', desc: 'Your written reflections' },
-  { id: 'goals', label: 'Goals and habits', desc: 'What you are working on' },
-  { id: 'interests', label: 'Interests', desc: 'Topics you are curious about' },
-  { id: 'astrology', label: 'Astrology', desc: 'Birth info and astrology reflections' },
-  { id: 'memories', label: 'Approved memories', desc: 'Information you have let Novie remember' },
+  { id: 'checkins', dbKey: 'checkins_enabled', label: 'Check-ins and mood history', desc: 'Energy, stress, mood, and connection data' },
+  { id: 'journal', dbKey: 'journal_enabled', label: 'Journal entries', desc: 'Your written reflections' },
+  { id: 'goals', dbKey: 'goals_enabled', label: 'Goals and habits', desc: 'What you are working on' },
+  { id: 'habits', dbKey: 'habits_enabled', label: 'Habits detail', desc: 'Habit names and streaks' },
+  { id: 'interests', dbKey: 'interests_enabled', label: 'Interests', desc: 'Topics you are curious about' },
+  { id: 'reflections', dbKey: 'reflections_enabled', label: 'Reflections', desc: 'Self-discovery answers' },
+  { id: 'astrology', dbKey: 'astrology_enabled', label: 'Astrology', desc: 'Birth info and astrology reflections' },
+  { id: 'memories', dbKey: 'memories_enabled', label: 'Approved memories', desc: 'Information you have let Novie remember' },
+  { id: 'artwork', dbKey: 'artwork_enabled', label: 'Artwork', desc: 'Your creative work count' },
 ]
 
 export default function MemoryModal({ open, onClose }) {
-  const { memories, refreshMemories, showToast } = useApp()
+  const { memories, aiPrivacy, refreshMemories, refreshAiPrivacy, showToast } = useApp()
   const [newMemory, setNewMemory] = useState('')
   const [newCategory, setNewCategory] = useState('preference')
-  const [enabledCategories, setEnabledCategories] = useState({
-    checkins: true, journal: true, goals: true, interests: true, astrology: false, memories: true,
-  })
+  const [toggles, setToggles] = useState(null)
+  const [savingToggles, setSavingToggles] = useState(false)
+
+  useEffect(() => {
+    if (!open) return
+    if (aiPrivacy) {
+      setToggles({
+        checkins_enabled: aiPrivacy.checkins_enabled ?? true,
+        journal_enabled: aiPrivacy.journal_enabled ?? true,
+        goals_enabled: aiPrivacy.goals_enabled ?? true,
+        habits_enabled: aiPrivacy.habits_enabled ?? true,
+        interests_enabled: aiPrivacy.interests_enabled ?? true,
+        reflections_enabled: aiPrivacy.reflections_enabled ?? true,
+        astrology_enabled: aiPrivacy.astrology_enabled ?? false,
+        memories_enabled: aiPrivacy.memories_enabled ?? true,
+        artwork_enabled: aiPrivacy.artwork_enabled ?? true,
+      })
+    } else {
+      setToggles({
+        checkins_enabled: true, journal_enabled: true, goals_enabled: true,
+        habits_enabled: true, interests_enabled: true, reflections_enabled: true,
+        astrology_enabled: false, memories_enabled: true, artwork_enabled: true,
+      })
+    }
+  }, [open, aiPrivacy])
 
   const addMemory = async () => {
     if (!newMemory.trim()) return
@@ -37,7 +62,7 @@ export default function MemoryModal({ open, onClose }) {
       approved: true,
     })
     await refreshMemories()
-    showToast('💾 Memory saved')
+    showToast('Memory saved')
     setNewMemory('')
   }
 
@@ -47,16 +72,22 @@ export default function MemoryModal({ open, onClose }) {
     showToast('Memory removed')
   }
 
-  const toggleCategory = (catId) => {
-    setEnabledCategories(prev => ({ ...prev, [catId]: !prev[catId] }))
-    showToast(`${enabledCategories[catId] ? 'Disabled' : 'Enabled'} ${CATEGORY_CONTROLS.find(c => c.id === catId)?.label}`)
+  const toggleCategory = async (dbKey) => {
+    if (!toggles) return
+    const newVal = !toggles[dbKey]
+    setToggles(prev => ({ ...prev, [dbKey]: newVal }))
+    setSavingToggles(true)
+    await api.saveAiPrivacySettings({ [dbKey]: newVal })
+    await refreshAiPrivacy()
+    setSavingToggles(false)
+    showToast(`${newVal ? 'Enabled' : 'Disabled'} — Novie will ${newVal ? 'use' : 'not use'} this data`)
   }
 
   return (
     <Modal open={open} onClose={onClose}>
       <span className="kicker">AI MEMORY & PRIVACY</span>
       <h2>What Novie remembers is up to you.</h2>
-      <p className="muted">Review, add, or delete anything Novie knows. Control which categories of your information the AI can use.</p>
+      <p className="muted">Review, add, or delete anything Novie knows. Control which categories of your information the AI can use. Changes take effect immediately.</p>
 
       <div style={{ marginTop: '18px' }}>
         <strong>Approved memories ({memories.length})</strong>
@@ -83,11 +114,11 @@ export default function MemoryModal({ open, onClose }) {
         <label>Add a memory</label>
         <textarea
           value={newMemory}
-          onChange={e => setNewMemory(e.target.value)}
+          onChange={(e) => setNewMemory(e.target.value)}
           placeholder="Something you want Novie to remember about you..."
           style={{ minHeight: '80px' }}
         />
-        <select value={newCategory} onChange={e => setNewCategory(e.target.value)} style={{ marginTop: '8px' }}>
+        <select value={newCategory} onChange={(e) => setNewCategory(e.target.value)} style={{ marginTop: '8px' }}>
           {MEMORY_CATEGORIES.map(c => (
             <option key={c.id} value={c.id}>{c.label} — {c.desc}</option>
           ))}
@@ -98,25 +129,26 @@ export default function MemoryModal({ open, onClose }) {
       <div style={{ marginTop: '20px' }}>
         <strong>What Novie can access</strong>
         <p className="muted" style={{ fontSize: '13px', marginTop: '4px' }}>
-          Toggle which categories Novie can use when responding to you. Disabling a category does not delete the data — it just means the AI will not reference it.
+          Toggle which categories Novie can use when responding to you. Disabling a category does not delete the data — it means the AI will not reference it. Changes are saved and enforced immediately.
         </p>
         <div className="toolList" style={{ marginTop: '12px' }}>
           {CATEGORY_CONTROLS.map(cat => (
             <button
               key={cat.id}
-              onClick={() => toggleCategory(cat.id)}
+              onClick={() => toggleCategory(cat.dbKey)}
               style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
             >
               <div>
                 <span style={{ display: 'block' }}>{cat.label}</span>
                 <small className="muted" style={{ fontWeight: '400' }}>{cat.desc}</small>
               </div>
-              <span style={{ fontWeight: '800', color: enabledCategories[cat.id] ? 'var(--green)' : 'var(--muted)' }}>
-                {enabledCategories[cat.id] ? 'On' : 'Off'}
+              <span style={{ fontWeight: '800', color: toggles?.[cat.dbKey] ? 'var(--green)' : 'var(--muted)' }}>
+                {toggles?.[cat.dbKey] ? 'On' : 'Off'}
               </span>
             </button>
           ))}
         </div>
+        {savingToggles && <p className="muted" style={{ fontSize: '12px', marginTop: '8px' }}>Saving...</p>}
       </div>
 
       <div style={{ marginTop: '16px', padding: '14px', background: '#fff', borderRadius: '14px', border: '1px solid var(--line)' }}>

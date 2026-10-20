@@ -9,12 +9,12 @@ import CreateModal from '../components/CreateModal.jsx'
 import * as api from '../lib/api.js'
 
 export default function TodayScreen({ onNav }) {
-  const { profile, checkins, goals, journal, reflections, memories, interests, habits, artwork, awardXp, showToast, refreshProfile, refreshCheckins } = useApp()
+  const { profile, checkins, goals, journal, reflections, memories, interests, habits, artwork, aiPrivacy, awardXp, showToast, refreshProfile, refreshCheckins } = useApp()
   const [novieOpen, setNovieOpen] = useState(false)
   const [checkinOpen, setCheckinOpen] = useState(false)
   const [createOpen, setCreateOpen] = useState(false)
 
-  const ctx = useMemo(() => buildContext({ profile, checkins, journal, goals, reflections, memories, interests, habits, artworkCount: artwork?.length || 0 }), [profile, checkins, journal, goals, reflections, memories, interests, habits, artwork])
+  const ctx = useMemo(() => buildContext({ profile, checkins, journal, goals, reflections, memories, interests, habits, artworkCount: artwork?.length || 0, privacySettings: aiPrivacy }), [profile, checkins, journal, goals, reflections, memories, interests, habits, artwork, aiPrivacy])
   const insights = useMemo(() => generateInsight(ctx), [ctx])
   const dailyReflection = useMemo(() => getDailyReflection(ctx), [ctx])
   const affirmation = useMemo(() => getDailyAffirmation(), [])

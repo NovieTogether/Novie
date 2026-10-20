@@ -4,12 +4,12 @@ import { buildContext, generateReply, generateInsight, getDailyReflection, getCr
 import { Modal, Card } from './ui.jsx'
 
 export default function NovieModal({ open, onClose, onNav }) {
-  const { profile, checkins, journal, goals, reflections, memories, interests, habits, artwork, awardXp, showToast } = useApp()
+  const { profile, checkins, journal, goals, reflections, memories, interests, habits, artwork, aiPrivacy, awardXp, showToast } = useApp()
   const [input, setInput] = useState('')
   const [conversation, setConversation] = useState([])
   const [showContext, setShowContext] = useState(false)
 
-  const ctx = useMemo(() => buildContext({ profile, checkins, journal, goals, reflections, memories, interests, habits, artworkCount: artwork?.length || 0 }), [profile, checkins, journal, goals, reflections, memories, interests, habits, artwork])
+  const ctx = useMemo(() => buildContext({ profile, checkins, journal, goals, reflections, memories, interests, habits, artworkCount: artwork?.length || 0, privacySettings: aiPrivacy }), [profile, checkins, journal, goals, reflections, memories, interests, habits, artwork, aiPrivacy])
 
   const suggestions = useMemo(() => getCrossAppSuggestions(ctx), [ctx])
 

@@ -1,9 +1,12 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { useAuth } from './AuthContext.jsx'
 import * as api from '../lib/api.js'
 
 const AppContext = createContext(null)
 
 export function AppProvider({ children }) {
+  const { isAuthenticated, authLoading } = useAuth()
+
   const [profile, setProfile] = useState(null)
   const [checkins, setCheckins] = useState([])
   const [goals, setGoals] = useState([])
@@ -16,6 +19,7 @@ export function AppProvider({ children }) {
   const [achievements, setAchievements] = useState([])
   const [habits, setHabits] = useState([])
   const [artwork, setArtwork] = useState([])
+  const [aiPrivacy, setAiPrivacy] = useState(null)
   const [loading, setLoading] = useState(true)
   const [toast, setToast] = useState(null)
 
@@ -24,9 +28,8 @@ export function AppProvider({ children }) {
     setTimeout(() => setToast(null), 2500)
   }, [])
 
-  // Load everything on mount
   const loadAll = useCallback(async () => {
-    const [p, c, g, j, r, con, i, m, ge, a, h, art] = await Promise.all([
+    const [p, c, g, j, r, con, i, m, ge, a, h, art, priv] = await Promise.all([
       api.getProfile(),
       api.getCheckins(30),
       api.getGoals(),
@@ -39,6 +42,7 @@ export function AppProvider({ children }) {
       api.getAchievements(),
       api.getHabits(),
       api.getArtwork(50),
+      api.getAiPrivacySettings(),
     ])
     setProfile(p)
     setCheckins(c)
@@ -52,10 +56,33 @@ export function AppProvider({ children }) {
     setAchievements(a)
     setHabits(h)
     setArtwork(art)
+    setAiPrivacy(priv)
     setLoading(false)
   }, [])
 
-  useEffect(() => { loadAll() }, [loadAll])
+  useEffect(() => {
+    if (authLoading) return
+    if (isAuthenticated) {
+      setLoading(true)
+      loadAll()
+    } else {
+      // Clear all state when not authenticated
+      setProfile(null)
+      setCheckins([])
+      setGoals([])
+      setJournal([])
+      setReflections([])
+      setConnections([])
+      setInterests([])
+      setMemories([])
+      setGardenEvents([])
+      setAchievements([])
+      setHabits([])
+      setArtwork([])
+      setAiPrivacy(null)
+      setLoading(false)
+    }
+  }, [isAuthenticated, authLoading, loadAll])
 
   const refreshProfile = useCallback(async () => {
     const p = await api.getProfile()
@@ -107,6 +134,11 @@ export function AppProvider({ children }) {
     setHabits(h)
   }, [])
 
+  const refreshAiPrivacy = useCallback(async () => {
+    const p = await api.getAiPrivacySettings()
+    setAiPrivacy(p)
+  }, [])
+
   const awardXp = useCallback(async (amount, activityType, description) => {
     await api.awardXp(amount, activityType, description)
     await refreshProfile()
@@ -115,10 +147,11 @@ export function AppProvider({ children }) {
 
   const value = {
     profile, checkins, goals, journal, reflections, connections, interests,
-    memories, gardenEvents, achievements, habits, artwork, loading, toast, showToast,
+    memories, gardenEvents, achievements, habits, artwork, aiPrivacy,
+    loading, toast, showToast,
     refreshProfile, refreshCheckins, refreshGoals, refreshJournal,
     refreshReflections, refreshConnections, refreshInterests, refreshMemories,
-    refreshGarden, refreshHabits, awardXp, loadAll,
+    refreshGarden, refreshHabits, refreshAiPrivacy, awardXp, loadAll,
   }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>

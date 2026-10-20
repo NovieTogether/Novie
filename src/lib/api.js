@@ -1,8 +1,8 @@
 import { supabase } from './supabase.js'
 
-// Profile
+// Profile — scoped to authenticated user via RLS + user_id column
 export async function getProfile() {
-  const { data, error } = await supabase.from('profiles').select('*').limit(1).maybeSingle()
+  const { data, error } = await supabase.from('profiles').select('*').maybeSingle()
   if (error) { console.error('getProfile', error); return null }
   return data
 }
@@ -14,7 +14,7 @@ export async function createProfile(profile) {
 }
 
 export async function updateProfile(updates) {
-  const { data: existing } = await supabase.from('profiles').select('id').limit(1).maybeSingle()
+  const { data: existing } = await supabase.from('profiles').select('id').maybeSingle()
   if (!existing) {
     return createProfile(updates)
   }
@@ -28,7 +28,7 @@ export async function updateProfile(updates) {
   return data
 }
 
-// Check-ins
+// Check-ins — automatically scoped by RLS to the authenticated user
 export async function getCheckins(limit = 30) {
   const { data, error } = await supabase
     .from('checkins').select('*').order('created_at', { ascending: false }).limit(limit)
@@ -102,6 +102,11 @@ export async function addReflection(reflection) {
   const { data, error } = await supabase.from('reflections').insert(reflection).select().maybeSingle()
   if (error) console.error('addReflection', error)
   return data
+}
+
+export async function deleteReflection(id) {
+  const { error } = await supabase.from('reflections').delete().eq('id', id)
+  if (error) console.error('deleteReflection', error)
 }
 
 // Connections
@@ -263,15 +268,15 @@ export async function deleteArtwork(id) {
   if (error) console.error('deleteArtwork', error)
 }
 
-// Garden preferences
+// Garden preferences — one row per user
 export async function getGardenPrefs() {
-  const { data, error } = await supabase.from('garden_preferences').select('*').limit(1).maybeSingle()
+  const { data, error } = await supabase.from('garden_preferences').select('*').maybeSingle()
   if (error) console.error('getGardenPrefs', error)
   return data
 }
 
 export async function saveGardenPrefs(prefs) {
-  const { data: existing } = await supabase.from('garden_preferences').select('id').limit(1).maybeSingle()
+  const { data: existing } = await supabase.from('garden_preferences').select('id').maybeSingle()
   if (existing) {
     const { data, error } = await supabase.from('garden_preferences').update(prefs).eq('id', existing.id).select().maybeSingle()
     if (error) console.error('saveGardenPrefs', error)
@@ -280,4 +285,49 @@ export async function saveGardenPrefs(prefs) {
   const { data, error } = await supabase.from('garden_preferences').insert(prefs).select().maybeSingle()
   if (error) console.error('saveGardenPrefs', error)
   return data
+}
+
+// AI Privacy Settings — one row per user
+export async function getAiPrivacySettings() {
+  const { data, error } = await supabase.from('ai_privacy_settings').select('*').maybeSingle()
+  if (error) console.error('getAiPrivacySettings', error)
+  return data
+}
+
+export async function saveAiPrivacySettings(settings) {
+  const { data: existing } = await supabase.from('ai_privacy_settings').select('id').maybeSingle()
+  const payload = { ...settings, updated_at: new Date().toISOString() }
+  if (existing) {
+    const { data, error } = await supabase.from('ai_privacy_settings').update(payload).eq('id', existing.id).select().maybeSingle()
+    if (error) console.error('saveAiPrivacySettings', error)
+    return data
+  }
+  const { data, error } = await supabase.from('ai_privacy_settings').insert(payload).select().maybeSingle()
+  if (error) console.error('saveAiPrivacySettings', error)
+  return data
+}
+
+// AI Conversations — persistent conversation history
+export async function getConversations(limit = 50) {
+  const { data, error } = await supabase
+    .from('ai_conversations').select('*').order('created_at', { ascending: false }).limit(limit)
+  if (error) console.error('getConversations', error)
+  return data || []
+}
+
+export async function addConversationMessage(message) {
+  const { data, error } = await supabase.from('ai_conversations').insert(message).select().maybeSingle()
+  if (error) console.error('addConversationMessage', error)
+  return data
+}
+
+export async function clearConversations() {
+  const { error } = await supabase.from('ai_conversations').delete().neq('id', '00000000-0000-0000-0000-000000000000')
+  if (error) console.error('clearConversations', error)
+}
+
+// Sign out — clears the auth session
+export async function signOut() {
+  const { error } = await supabase.auth.signOut()
+  if (error) console.error('signOut', error)
 }

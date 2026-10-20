@@ -8,7 +8,7 @@ import CreateModal from '../components/CreateModal.jsx'
 import * as api from '../lib/api.js'
 
 export default function ExploreScreen({ onNav }) {
-  const { profile, checkins, journal, goals, reflections, memories, interests, habits, artwork, awardXp, showToast } = useApp()
+  const { profile, checkins, journal, goals, reflections, memories, interests, habits, artwork, aiPrivacy, awardXp, showToast } = useApp()
   const [activeModal, setActiveModal] = useState(null)
   const [novieOpen, setNovieOpen] = useState(false)
   const [createOpen, setCreateOpen] = useState(false)
@@ -27,7 +27,7 @@ export default function ExploreScreen({ onNav }) {
   // Science state
   const [selectedLesson, setSelectedLesson] = useState(null)
 
-  const ctx = useMemo(() => buildContext({ profile, checkins, journal, goals, reflections, memories, interests, habits, artworkCount: artwork?.length || 0 }), [profile, checkins, journal, goals, reflections, memories, interests, habits, artwork])
+  const ctx = useMemo(() => buildContext({ profile, checkins, journal, goals, reflections, memories, interests, habits, artworkCount: artwork?.length || 0, privacySettings: aiPrivacy }), [profile, checkins, journal, goals, reflections, memories, interests, habits, artwork, aiPrivacy])
   const insights = useMemo(() => generateInsight(ctx), [ctx])
   const moonPhase = useMemo(() => getMoonPhase(), [])
   const userSign = useMemo(() => getZodiacSign(profile?.birth_date), [profile])
