@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { useApp } from '../context/AppContext.jsx'
 import { MOODS } from '../lib/constants.js'
-import { buildContext, generateInsight } from '../lib/ai.js'
+import { buildContext, generateInsight, getDailyReflection } from '../lib/ai.js'
 import { Modal, Card } from '../components/ui.jsx'
 import NovieModal from '../components/NovieModal.jsx'
 import CheckInModal from '../components/CheckInModal.jsx'
