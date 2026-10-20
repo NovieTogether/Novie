@@ -331,3 +331,39 @@ export async function signOut() {
   const { error } = await supabase.auth.signOut()
   if (error) console.error('signOut', error)
 }
+
+// AI — call the novie-ai edge function for live AI responses
+// The server fetches the user's permitted data directly from the database
+// using the user's JWT, enforcing privacy settings server-side.
+// Returns { reply, mode } where mode is 'live' or 'scripted'
+export async function callNovieAI(messages) {
+  try {
+    const { data: session } = await supabase.auth.getSession()
+    if (!session?.session?.access_token) {
+      return { reply: null, mode: 'scripted', message: 'Not authenticated' }
+    }
+
+    const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/novie-ai`
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.session.access_token}`,
+      },
+      body: JSON.stringify({ messages }),
+    })
+
+    if (!response.ok) {
+      return { reply: null, mode: 'scripted', message: `Edge function returned ${response.status}` }
+    }
+
+    const data = await response.json()
+    if (!data || typeof data !== 'object') {
+      return { reply: null, mode: 'scripted', message: 'Invalid response from server' }
+    }
+    return data
+  } catch (err) {
+    console.error('callNovieAI', err)
+    return { reply: null, mode: 'scripted', message: 'Network error' }
+  }
+}
