@@ -88,6 +88,7 @@ export default function TodayScreen({ onNav }) {
             </Card>
           ))}
         </div>
+        <button className="secondary" style={{ marginTop: '12px' }} onClick={() => onNav('explore')}>See all insights in Discover →</button>
       </section>
 
       <section className="section">

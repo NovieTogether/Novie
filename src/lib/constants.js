@@ -132,7 +132,7 @@ export const EXPLORE_TILES = [
   { icon: '💬', title: 'Communication Lab', desc: 'Turn a hard thought into words you can actually send.', screen: 'communication', gradient: 'linear-gradient(145deg,#f8e6ec,#fff)' },
   { icon: '👨‍👩‍👧', title: 'Family', desc: 'Family prompts, challenges and shared moments.', screen: 'family', gradient: 'linear-gradient(145deg,#fff1d9,#fff)' },
   { icon: '🧒', title: 'Kids', desc: 'Tiny 3–5 minute activities with a trusted adult.', screen: 'kids', gradient: 'linear-gradient(145deg,#e9f7ed,#fff)' },
-  { icon: '🪞', title: 'My patterns', desc: 'See what you have been noticing over time.', screen: 'patterns', gradient: 'linear-gradient(145deg,#edf8ef,#fff)' },
+  { icon: '🔍', title: 'Discover', desc: 'Patterns from your data, recommendations, and your timeline.', screen: 'patterns', gradient: 'linear-gradient(145deg,#edf8ef,#fff)' },
   { icon: '🧘', title: 'Wellness', desc: 'Cycle tracking, rest, and body awareness.', screen: 'wellness', gradient: 'linear-gradient(145deg,#fff0f4,#fff)' },
   { icon: '✦', title: 'Ask Novie', desc: 'Start anywhere with your AI companion.', screen: 'novie', gradient: 'linear-gradient(145deg,#fff5e8,#fff)' },
 ]

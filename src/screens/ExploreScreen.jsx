@@ -2,10 +2,11 @@ import { useState, useMemo, useEffect } from 'react'
 import { useApp } from '../context/AppContext.jsx'
 import { EXPLORE_TILES, ZODIAC_SIGNS, SCIENCE_LESSONS, COMMUNICATION_STYLES, KID_ACTIVITIES } from '../lib/constants.js'
 import { Modal, Card, PageHead, Tile } from '../components/ui.jsx'
-import { rewriteMessage, buildContext, generateInsight } from '../lib/ai.js'
+import { rewriteMessage } from '../lib/ai.js'
 import { getSunSign, getMoonSign, getCurrentMoonPhase, SIGN_INTERPRETATIONS, PLANET_MEANINGS, HOUSE_MEANINGS, ASPECT_MEANINGS, getSignElement, getSignModality, ELEMENTS, MODALITIES, getSunMoonElementDescription } from '../lib/astrology.js'
 import NovieModal from '../components/NovieModal.jsx'
 import CreateModal from '../components/CreateModal.jsx'
+import DiscoverScreen from './DiscoverScreen.jsx'
 import * as api from '../lib/api.js'
 
 export default function ExploreScreen({ onNav }) {
@@ -13,6 +14,7 @@ export default function ExploreScreen({ onNav }) {
   const [activeModal, setActiveModal] = useState(null)
   const [novieOpen, setNovieOpen] = useState(false)
   const [createOpen, setCreateOpen] = useState(false)
+  const [discoverOpen, setDiscoverOpen] = useState(false)
 
   // Astrology state
   const [birthDate, setBirthDate] = useState(profile?.birth_date || '')
@@ -50,10 +52,6 @@ export default function ExploreScreen({ onNav }) {
 
   // Science state
   const [selectedLesson, setSelectedLesson] = useState(null)
-
-  const ctx = useMemo(() => buildContext({ profile, checkins, journal, goals, reflections, memories, interests, habits, artworkCount: artwork?.length || 0, privacySettings: aiPrivacy }), [profile, checkins, journal, goals, reflections, memories, interests, habits, artwork, aiPrivacy])
-  const insights = useMemo(() => generateInsight(ctx), [ctx])
-
 
   const saveBirthInfo = async () => {
     if (!birthDate) { showToast('Birth date is required'); return }
@@ -96,6 +94,7 @@ export default function ExploreScreen({ onNav }) {
               gradient={t.gradient}
               onClick={() => {
                 if (t.screen === 'novie') setNovieOpen(true)
+                else if (t.screen === 'patterns') setDiscoverOpen(true)
                 else setActiveModal(t.screen)
               }} />
           ))}
@@ -473,26 +472,6 @@ export default function ExploreScreen({ onNav }) {
         )}
       </Modal>
 
-      {/* Patterns Modal */}
-      <Modal open={activeModal === 'patterns'} onClose={() => setActiveModal(null)}>
-        <span className="kicker">NOVIE PATTERNS</span>
-        <h2>Things worth noticing, not labels.</h2>
-        <div className="rewrite" style={{ marginTop: '16px' }}>
-          <p style={{ color: 'var(--ink)' }}>Check-ins saved: {checkins.length}</p>
-          <p style={{ color: 'var(--ink)' }}>Journal entries: {journal.length}</p>
-          <p style={{ color: 'var(--ink)' }}>Reflections: {reflections.length}</p>
-          <p style={{ color: 'var(--ink)' }}>Goals active: {goals.filter(g => g.status === 'active').length}</p>
-        </div>
-        <div style={{ marginTop: '16px' }}>
-          {insights.map((ins, i) => (
-            <div key={i} className="patternBox">
-              <span>{ins.text}</span>
-            </div>
-          ))}
-        </div>
-        <p className="muted" style={{ marginTop: '12px' }}>Use these as clues, not conclusions.</p>
-      </Modal>
-
       {/* Wellness Modal */}
       <Modal open={activeModal === 'wellness'} onClose={() => setActiveModal(null)}>
         <span className="kicker">WELLNESS</span>
@@ -508,6 +487,15 @@ export default function ExploreScreen({ onNav }) {
 
       <NovieModal open={novieOpen} onClose={() => setNovieOpen(false)} onNav={onNav} />
       <CreateModal open={createOpen} onClose={() => setCreateOpen(false)} />
+
+      {discoverOpen && (
+        <div className="modalWrap show" style={{ overflowY: 'auto' }} onClick={(e) => { if (e.target === e.currentTarget) setDiscoverOpen(false) }}>
+          <div className="modal" style={{ maxWidth: '700px' }}>
+            <button className="close" onClick={() => setDiscoverOpen(false)}>×</button>
+            <DiscoverScreen onNav={onNav} onClose={() => setDiscoverOpen(false)} />
+          </div>
+        </div>
+      )}
     </>
   )
 }

@@ -677,3 +677,138 @@ export function getLearningSuggestion(ctx) {
 function connectionsCount(ctx) {
   return ctx.connection !== null && ctx.connection !== undefined ? 1 : 0
 }
+
+// ─── Discovery Timeline ──────────────────────────────────────────────────────
+// Aggregates all user data into a chronological feed. Deterministic, local.
+// Items: { type, date, title, detail, xp, source }
+
+export function buildDiscoveryTimeline(data) {
+  const items = []
+  const {
+    checkins = [], journal = [], reflections = [], goals = [],
+    habits = [], gardenEvents = [], artwork = [], interests = [],
+    achievements = [], memories = [],
+  } = data
+
+  // Garden events (XP-earning activities — covers check-ins, journal, habits, goals, lessons, astrology)
+  gardenEvents.forEach(e => {
+    const isInsightFeedback = e.description?.startsWith('Insight feedback')
+    if (isInsightFeedback) return // skip, these are meta-records
+    items.push({
+      type: 'activity',
+      date: e.created_at,
+      title: e.description || e.activity_type,
+      detail: `+${e.xp_earned} XP`,
+      xp: e.xp_earned,
+      source: e.activity_type,
+    })
+  })
+
+  // Journal entries
+  journal.forEach(j => {
+    items.push({
+      type: 'journal',
+      date: j.created_at,
+      title: j.title || 'Journal entry',
+      detail: j.content?.length > 120 ? j.content.slice(0, 120) + '...' : j.content,
+      xp: 0,
+      source: 'journal',
+    })
+  })
+
+  // Reflections
+  reflections.forEach(r => {
+    const isInsight = r.category === 'insight-feedback'
+    items.push({
+      type: isInsight ? 'insight-reflection' : 'reflection',
+      date: r.created_at,
+      title: isInsight ? `Reflected on insight: ${r.question || ''}` : r.question || 'Reflection',
+      detail: r.answer?.length > 120 ? r.answer.slice(0, 120) + '...' : r.answer,
+      xp: 0,
+      source: isInsight ? 'insight-feedback' : 'reflection',
+    })
+  })
+
+  // Goals — both creation and completion
+  goals.forEach(g => {
+    items.push({
+      type: g.status === 'completed' ? 'goal-complete' : 'goal',
+      date: g.status === 'completed' ? g.updated_at || g.created_at : g.created_at,
+      title: g.status === 'completed' ? `Completed: ${g.title}` : `Set goal: ${g.title}`,
+      detail: '',
+      xp: g.status === 'completed' ? 25 : 10,
+      source: 'goal',
+    })
+  })
+
+  // Habits
+  habits.forEach(h => {
+    if (h.last_completed) {
+      items.push({
+        type: 'habit',
+        date: h.last_completed,
+        title: `Habit done: ${h.name}`,
+        detail: `${h.streak_count || 0} day streak`,
+        xp: 8,
+        source: 'habit',
+      })
+    }
+  })
+
+  // Artwork
+  artwork.forEach(a => {
+    items.push({
+      type: 'artwork',
+      date: a.created_at,
+      title: `Created: ${a.title || a.emotion || 'artwork'}`,
+      detail: a.activity || '',
+      xp: 0,
+      source: 'artwork',
+    })
+  })
+
+  // Achievements
+  achievements.forEach(a => {
+    items.push({
+      type: 'achievement',
+      date: a.created_at,
+      title: `${a.icon || ''} ${a.name}`,
+      detail: a.description,
+      xp: 0,
+      source: 'achievement',
+    })
+  })
+
+  // Sort by date descending
+  items.sort((a, b) => new Date(b.date) - new Date(a.date))
+
+  return items
+}
+
+// ─── Data Summary for Discovery ──────────────────────────────────────────────
+
+export function getDataSummary(ctx, timeline) {
+  const totalItems = timeline.length
+  const dateRange = (() => {
+    if (timeline.length === 0) return null
+    const newest = new Date(timeline[0].date)
+    const oldest = new Date(timeline[timeline.length - 1].date)
+    const days = Math.round((newest - oldest) / 86400000)
+    return { newest, oldest, days }
+  })()
+
+  return {
+    totalItems,
+    dateRange,
+    checkinCount: ctx.checkinCount,
+    journalCount: ctx.journalCount,
+    reflectionCount: ctx.reflectionCount,
+    goalCount: ctx.goalList?.length || 0,
+    completedGoals: ctx.completedGoals || 0,
+    habitCount: ctx.habitList?.filter(h => h.active).length || 0,
+    artworkCount: ctx.artworkCount || 0,
+    interestCount: ctx.interestNames?.length || 0,
+    xp: ctx.xp || 0,
+    streak: ctx.streak || 0,
+  }
+}
