@@ -367,3 +367,34 @@ export async function callNovieAI(messages) {
     return { reply: null, mode: 'scripted', message: 'Network error' }
   }
 }
+
+// Learning progress — tracks completed lessons per user
+export async function getLearningProgress() {
+  const { data, error } = await supabase
+    .from('learning_progress')
+    .select('*')
+    .order('created_at', { ascending: true })
+  if (error) console.error('getLearningProgress', error)
+  return data || []
+}
+
+export async function completeLesson(pathId, lessonIndex, lessonTitle, reflection) {
+  // The unique constraint on (user_id, path_id, lesson_index) prevents duplicates
+  const { data, error } = await supabase
+    .from('learning_progress')
+    .insert({
+      path_id: pathId,
+      lesson_index: lessonIndex,
+      lesson_title: lessonTitle,
+      reflection: reflection || null,
+    })
+    .select()
+    .maybeSingle()
+  if (error) {
+    // Duplicate completion — not an error, just already done
+    if (error.code === '23505') return { alreadyCompleted: true }
+    console.error('completeLesson', error)
+    return null
+  }
+  return data
+}
