@@ -27,12 +27,15 @@ export default function CreateModal({ open, onClose }) {
     setStep('draw')
   }
 
-  const saveArtwork = async (dataUrl) => {
+  const saveArtwork = async (dataUrl, templateId) => {
+    const activityLabel = templateId
+      ? `coloring_${templateId}`
+      : (selectedActivity || 'free')
     await api.addArtwork({
       title: artTitle.trim() || `${CREATIVE_ACTIVITIES.find(a => a.id === selectedActivity)?.label || 'Untitled'}`,
       image_data: dataUrl,
       mood_tag: selectedEmotion || '',
-      activity_type: selectedActivity || 'free',
+      activity_type: activityLabel,
     })
     await awardXp(8, 'creative', 'Created artwork')
     showToast('🎨 Artwork saved. +8 XP')
