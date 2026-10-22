@@ -812,3 +812,193 @@ export function getDataSummary(ctx, timeline) {
     streak: ctx.streak || 0,
   }
 }
+
+// Cycle pattern analysis — deterministic, client-side, never sent to AI.
+// Returns pattern insights from cycle entries, or empty array if insufficient data.
+export function getCycleInsights(cycleEntries) {
+  if (!cycleEntries || cycleEntries.length < 3) return []
+
+  // Sort by date ascending
+  const entries = [...cycleEntries].sort((a, b) => new Date(a.entry_date) - new Date(b.entry_date))
+
+  // Find period starts to calculate cycle lengths
+  const periodStarts = entries.filter(e => e.period_start).map(e => e.entry_date)
+  if (periodStarts.length < 2) {
+    return [{
+      type: 'cycle_started',
+      title: 'Cycle tracking has begun',
+      observation: `You have recorded ${entries.length} cycle entr${entries.length === 1 ? 'y' : 'ies'}. At least 2 period start dates are needed to calculate cycle length.`,
+      interpretation: 'Keep logging the first day of each period. Once Novie can see at least two starts, it can begin calculating your cycle length and estimating future periods.',
+      confidence: 'very low',
+      evidence: `${entries.length} entries, ${periodStarts.length} period start${periodStarts.length === 1 ? '' : 's'} recorded`,
+      suggestion: null,
+    }]
+  }
+
+  const insights = []
+  const cycleLengths = []
+  for (let i = 1; i < periodStarts.length; i++) {
+    const days = Math.round((new Date(periodStarts[i]) - new Date(periodStarts[i - 1])) / 86400000)
+    if (days > 15 && days < 60) cycleLengths.push(days)
+  }
+
+  if (cycleLengths.length === 0) {
+    insights.push({
+      type: 'cycle_started',
+      title: 'Cycle tracking has begun',
+      observation: `You have recorded ${periodStarts.length} period start${periodStarts.length === 1 ? '' : 's'}, but they are too close or too far apart to calculate a typical cycle length.`,
+      interpretation: 'Keep logging the first day of each period. More data over time will allow Novie to identify your typical cycle length.',
+      confidence: 'very low',
+      evidence: `${periodStarts.length} period starts recorded`,
+      suggestion: null,
+    })
+    return insights
+  }
+
+  const avgCycle = Math.round(cycleLengths.reduce((a, b) => a + b, 0) / cycleLengths.length)
+  const minCycle = Math.min(...cycleLengths)
+  const maxCycle = Math.max(...cycleLengths)
+  const variation = maxCycle - minCycle
+
+  insights.push({
+    type: 'cycle_length',
+    title: `Your average cycle is ${avgCycle} days`,
+    observation: `Based on ${cycleLengths.length} recorded cycle${cycleLengths.length === 1 ? '' : 's'}, your cycles range from ${minCycle} to ${maxCycle} days, averaging ${avgCycle} days.`,
+    interpretation: variation <= 7
+      ? 'Your cycle length is relatively consistent. This is common and not a cause for concern.'
+      : 'Your cycle length varies noticeably. This is normal for many people and can be influenced by stress, sleep, travel, or other factors.',
+    confidence: cycleLengths.length >= 3 ? 'moderate' : 'low',
+    evidence: `${cycleLengths.length} cycle${cycleLengths.length === 1 ? '' : 's'} calculated from ${periodStarts.length} period starts`,
+    suggestion: null,
+  })
+
+  // Symptom patterns — check if certain symptoms cluster at specific cycle phases
+  const symptomNames = ['cramps', 'headache', 'bloating', 'breast_tenderness', 'fatigue', 'acne', 'backache', 'mood_swings']
+  const phaseData = { early: {}, mid: {}, late: {}, premenstrual: {} }
+  const phaseCounts = { early: 0, mid: 0, late: 0, premenstrual: 0 }
+
+  entries.forEach(entry => {
+    if (!entry.period_start && !entry.symptoms) return
+    // Determine phase relative to last known period start
+    const lastStart = periodStarts.filter(d => new Date(d) <= new Date(entry.entry_date)).pop()
+    if (!lastStart) return
+    const dayOfCycle = Math.round((new Date(entry.entry_date) - new Date(lastStart)) / 86400000)
+    let phase
+    if (dayOfCycle <= 5) phase = 'early'
+    else if (dayOfCycle <= 14) phase = 'mid'
+    else if (dayOfCycle <= 21) phase = 'late'
+    else phase = 'premenstrual'
+
+    phaseCounts[phase]++
+    const symptoms = entry.symptoms || {}
+    symptomNames.forEach(s => {
+      if (symptoms[s]) {
+        phaseData[phase][s] = (phaseData[phase][s] || 0) + 1
+      }
+    })
+  })
+
+  // Find symptoms that cluster in a specific phase
+  const PHASE_LABELS = { early: 'days 1-5 (period)', mid: 'days 6-14', late: 'days 15-21', premenstrual: 'days 22+ (premenstrual)' }
+  symptomNames.forEach(s => {
+    let bestPhase = null
+    let bestRate = 0
+    let bestCount = 0
+    Object.keys(phaseData).forEach(phase => {
+      const count = phaseData[phase][s] || 0
+      const total = phaseCounts[phase]
+      if (total < 2) return
+      const rate = count / total
+      if (rate > bestRate && count >= 2) {
+        bestRate = rate
+        bestPhase = phase
+        bestCount = count
+      }
+    })
+    if (bestPhase && bestRate >= 0.5) {
+      const symptomLabel = s.replace(/_/g, ' ')
+      insights.push({
+        type: `symptom_${s}`,
+        title: `${symptomLabel} appears most during ${PHASE_LABELS[bestPhase]}`,
+        observation: `You recorded ${symptomLabel} in ${bestCount} of ${phaseCounts[bestPhase]} entries during ${PHASE_LABELS[bestPhase]}.`,
+        interpretation: `This may be a recurring pattern for you. It does not mean your cycle causes these symptoms — many factors can contribute. If this pattern is bothersome or new, consider discussing it with a healthcare provider.`,
+        confidence: bestCount >= 4 ? 'moderate' : 'low',
+        evidence: `${bestCount} observations out of ${phaseCounts[bestPhase]} entries in this phase`,
+        suggestion: null,
+      })
+    }
+  })
+
+  // Mood/energy patterns across cycle
+  const moodByPhase = { early: [], mid: [], late: [], premenstrual: [] }
+  entries.forEach(entry => {
+    if (entry.mood == null) return
+    const lastStart = periodStarts.filter(d => new Date(d) <= new Date(entry.entry_date)).pop()
+    if (!lastStart) return
+    const dayOfCycle = Math.round((new Date(entry.entry_date) - new Date(lastStart)) / 86400000)
+    let phase
+    if (dayOfCycle <= 5) phase = 'early'
+    else if (dayOfCycle <= 14) phase = 'mid'
+    else if (dayOfCycle <= 21) phase = 'late'
+    else phase = 'premenstrual'
+    moodByPhase[phase].push(entry.mood)
+  })
+
+  Object.keys(moodByPhase).forEach(phase => {
+    const moods = moodByPhase[phase]
+    if (moods.length < 3) return
+    const avg = moods.reduce((a, b) => a + b, 0) / moods.length
+    if (avg <= 2.5) {
+      insights.push({
+        type: `mood_${phase}`,
+        title: `Lower mood during ${PHASE_LABELS[phase]}`,
+        observation: `Your average mood during ${PHASE_LABELS[phase]} is ${avg.toFixed(1)} out of 5, based on ${moods.length} entries.`,
+        interpretation: 'You may notice lower mood during this part of your cycle. This is a correlation, not a cause. Many factors affect mood, and cycle phase is just one of them. If low mood is persistent or distressing, a healthcare provider can help.',
+        confidence: moods.length >= 5 ? 'moderate' : 'low',
+        evidence: `${moods.length} mood recordings in this phase`,
+        suggestion: null,
+      })
+    }
+  })
+
+  return insights
+}
+
+// Estimate next period based on recorded cycle history
+export function estimateNextPeriod(cycleEntries) {
+  if (!cycleEntries || cycleEntries.length === 0) return null
+
+  const periodStarts = cycleEntries
+    .filter(e => e.period_start)
+    .map(e => e.entry_date)
+    .sort((a, b) => new Date(a) - new Date(b))
+
+  if (periodStarts.length < 2) return { hasEstimate: false, reason: 'Need at least 2 period start dates to estimate' }
+
+  const cycleLengths = []
+  for (let i = 1; i < periodStarts.length; i++) {
+    const days = Math.round((new Date(periodStarts[i]) - new Date(periodStarts[i - 1])) / 86400000)
+    if (days > 15 && days < 60) cycleLengths.push(days)
+  }
+
+  if (cycleLengths.length === 0) return { hasEstimate: false, reason: 'Recorded starts are too close or far apart for a reliable estimate' }
+
+  const avgCycle = Math.round(cycleLengths.reduce((a, b) => a + b, 0) / cycleLengths.length)
+  const lastStart = periodStarts[periodStarts.length - 1]
+  const estimatedNext = new Date(lastStart)
+  estimatedNext.setDate(estimatedNext.getDate() + avgCycle)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const daysUntil = Math.round((estimatedNext - today) / 86400000)
+
+  return {
+    hasEstimate: true,
+    avgCycle,
+    lastPeriodStart: lastStart,
+    estimatedNext: estimatedNext.toISOString().split('T')[0],
+    daysUntil,
+    cycleCount: cycleLengths.length,
+    isPast: daysUntil < 0,
+    confidence: cycleLengths.length >= 3 ? 'moderate' : 'low',
+  }
+}

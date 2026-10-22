@@ -410,3 +410,35 @@ export async function completeLesson(pathId, lessonIndex, lessonTitle, reflectio
   }
   return data
 }
+
+// Cycle entries — strictly private, owner-scoped via RLS
+export async function getCycleEntries(limit = 200) {
+  const { data, error } = await supabase
+    .from('cycle_entries').select('*').order('entry_date', { ascending: false }).limit(limit)
+  if (error) console.error('getCycleEntries', error)
+  return data || []
+}
+
+export async function addCycleEntry(entry) {
+  const { data, error } = await supabase.from('cycle_entries').insert(entry).select().maybeSingle()
+  if (error) console.error('addCycleEntry', error)
+  return data
+}
+
+export async function updateCycleEntry(id, updates) {
+  const { data, error } = await supabase
+    .from('cycle_entries').update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('id', id).select().maybeSingle()
+  if (error) console.error('updateCycleEntry', error)
+  return data
+}
+
+export async function deleteCycleEntry(id) {
+  const { error } = await supabase.from('cycle_entries').delete().eq('id', id)
+  if (error) console.error('deleteCycleEntry', error)
+}
+
+export async function deleteAllCycleEntries() {
+  const { error } = await supabase.from('cycle_entries').delete().neq('id', '00000000-0000-0000-0000-000000000000')
+  if (error) console.error('deleteAllCycleEntries', error)
+}

@@ -7,6 +7,7 @@ import { getSunSign, getMoonSign, getCurrentMoonPhase, SIGN_INTERPRETATIONS, PLA
 import NovieModal from '../components/NovieModal.jsx'
 import CreateModal from '../components/CreateModal.jsx'
 import DiscoverScreen from './DiscoverScreen.jsx'
+import CycleTracker from '../components/CycleTracker.jsx'
 import * as api from '../lib/api.js'
 
 export default function ExploreScreen({ onNav }) {
@@ -15,6 +16,7 @@ export default function ExploreScreen({ onNav }) {
   const [novieOpen, setNovieOpen] = useState(false)
   const [createOpen, setCreateOpen] = useState(false)
   const [discoverOpen, setDiscoverOpen] = useState(false)
+  const [cycleOpen, setCycleOpen] = useState(false)
 
   // Astrology state
   const [birthDate, setBirthDate] = useState(profile?.birth_date || '')
@@ -478,15 +480,17 @@ export default function ExploreScreen({ onNav }) {
         <h2>Body awareness and rest.</h2>
         <p className="muted">Wellness in Novie is about noticing, not diagnosing. Track rest, energy, and how your body feels in check-ins.</p>
         <div className="toolList" style={{ marginTop: '16px' }}>
+          <button onClick={() => { setActiveModal(null); setCycleOpen(true) }}>🔴 Cycle tracking</button>
           <button onClick={() => { setActiveModal(null); onNav('today') }}>📋 Do a check-in</button>
           <button onClick={() => setActiveModal(null)}>🧘 3-minute breathing space</button>
           <button onClick={() => setActiveModal(null)}>😴 Rest reflection prompt</button>
         </div>
-        <p className="muted" style={{ marginTop: '12px' }}>Cycle tracking and deeper wellness features will grow over time. Everything is opt-in.</p>
+        <p className="muted" style={{ marginTop: '12px' }}>Cycle tracking is private — your data is never shared with connections or sent to the AI model. Everything is opt-in.</p>
       </Modal>
 
       <NovieModal open={novieOpen} onClose={() => setNovieOpen(false)} onNav={onNav} />
       <CreateModal open={createOpen} onClose={() => setCreateOpen(false)} />
+      <CycleTracker open={cycleOpen} onClose={() => setCycleOpen(false)} />
 
       {discoverOpen && (
         <div className="modalWrap show" style={{ overflowY: 'auto' }} onClick={(e) => { if (e.target === e.currentTarget) setDiscoverOpen(false) }}>
