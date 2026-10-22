@@ -183,6 +183,25 @@ export const PLANT_STAGES = [
   { minLeaves: 20, stage: 6, label: 'Abundant', icon: '🌺' },
 ]
 
+export const GARDEN_MILESTONES = [
+  { id: 'first_checkin', name: 'First Check-in', icon: '📋', description: 'You checked in for the first time. Your Garden has begun.', check: (d) => d.checkin >= 1 },
+  { id: 'first_journal', name: 'First Words', icon: '📓', description: 'You wrote your first journal entry.', check: (d) => d.journal >= 1 },
+  { id: 'first_reflection', name: 'First Reflection', icon: '🌙', description: 'You answered your first reflection question.', check: (d) => d.reflection >= 1 },
+  { id: 'first_artwork', name: 'First Creation', icon: '🎨', description: 'You created your first piece of artwork.', check: (d) => d.artwork >= 1 },
+  { id: 'first_goal', name: 'First Goal', icon: '🎯', description: 'You set your first goal.', check: (d) => d.goal >= 1 },
+  { id: 'checkin_7', name: 'Checking In', icon: '🌱', description: 'You completed 7 check-ins. Consistency is how patterns surface.', check: (d) => d.checkin >= 7 },
+  { id: 'journal_5', name: 'Storyteller', icon: '📖', description: 'You wrote 5 journal entries. Your words are building a record.', check: (d) => d.journal >= 5 },
+  { id: 'reflection_5', name: 'Self-Explorer', icon: '🔍', description: 'You answered 5 reflection questions. You are looking deeper.', check: (d) => d.reflection >= 5 },
+  { id: 'habit_streak_7', name: 'Roots Taking Hold', icon: '🌿', description: 'You maintained a 7-day habit streak. Real behavioral momentum.', check: (d) => d.maxHabitStreak >= 7 },
+  { id: 'habit_streak_30', name: 'Deep Roots', icon: '🌳', description: 'You maintained a 30-day habit streak. This is who you are now.', check: (d) => d.maxHabitStreak >= 30 },
+  { id: 'goal_completed_1', name: 'First Harvest', icon: '🏆', description: 'You completed your first goal. You set out to do something and did it.', check: (d) => d.goalCompleted >= 1 },
+  { id: 'goal_completed_5', name: 'Goal Gardener', icon: '🏅', description: 'You completed 5 goals. You are proven capable of follow-through.', check: (d) => d.goalCompleted >= 5 },
+  { id: 'xp_500', name: 'Half a Century of Growth', icon: '🌾', description: 'You earned 500 XP. Your Garden is thriving.', check: (d) => d.xp >= 500 },
+  { id: 'xp_1000', name: 'Abundant Garden', icon: '🌺', description: 'You earned 1,000 XP. Your Garden is flourishing.', check: (d) => d.xp >= 1000 },
+  { id: 'lesson_1', name: 'Curious Mind', icon: '🧭', description: 'You completed your first learning lesson.', check: (d) => d.lesson >= 1 },
+  { id: 'lesson_5', name: 'Knowledge Seeker', icon: '🗺️', description: 'You completed 5 learning lessons.', check: (d) => d.lesson >= 5 },
+]
+
 export const EMOTIONS_CREATE = [
   { id: 'overwhelmed', label: 'Overwhelmed', icon: '🌪️', suggestion: 'mandala', reason: 'Repetitive patterns can give your mind something simple and steady to focus on.' },
   { id: 'peaceful', label: 'Peaceful', icon: '🌤️', suggestion: 'nature', reason: 'A nature scene can extend the calm you are already feeling.' },

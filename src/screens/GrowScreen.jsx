@@ -1,13 +1,15 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useApp } from '../context/AppContext.jsx'
-import { GROWTH_TILES, REFLECTION_QUESTIONS, HABIT_SUGGESTIONS } from '../lib/constants.js'
+import { GROWTH_TILES, REFLECTION_QUESTIONS, HABIT_SUGGESTIONS, GARDEN_MILESTONES } from '../lib/constants.js'
 import { Modal, Card, PageHead } from '../components/ui.jsx'
 import GardenModal from '../components/GardenModal.jsx'
+import GardenWidget from '../components/GardenWidget.jsx'
 import MemoryModal from '../components/MemoryModal.jsx'
 import * as api from '../lib/api.js'
 
 export default function GrowScreen({ onNav }) {
   const { profile, goals, journal, reflections, habits, gardenEvents, achievements, interests,
+    checkins, artwork, loadAll,
     refreshGoals, refreshJournal, refreshReflections, refreshHabits, refreshGarden, awardXp, showToast } = useApp()
 
   const [activeModal, setActiveModal] = useState(null)
@@ -104,6 +106,40 @@ export default function GrowScreen({ onNav }) {
   const treeEmoji = leaves > 12 ? '🌳🌳🌳' : leaves > 6 ? '🌳🌳' : leaves > 3 ? '🌳' : '🌱'
   const activeGoals = goals.filter(g => g.status === 'active')
   const completedGoals = goals.filter(g => g.status === 'completed')
+
+  // Auto-check milestones and award new achievements (runs once per data load)
+  const milestoneChecked = useRef(false)
+  useEffect(() => {
+    if (milestoneChecked.current) return
+    if (gardenEvents.length === 0 && achievements.length === 0) return
+    milestoneChecked.current = true
+
+    const checkMilestones = async () => {
+      const milestoneData = {
+        checkin: checkins.length,
+        journal: journal.length,
+        reflection: reflections.filter(r => r.category !== 'insight-feedback' && r.category !== 'timeline-revisit').length,
+        artwork: artwork.length,
+        goal: goals.length,
+        goalCompleted: goals.filter(g => g.status === 'completed').length,
+        maxHabitStreak: Math.max(0, ...habits.map(h => h.streak_count || 0)),
+        xp,
+        lesson: gardenEvents.filter(e => e.activity_type === 'lesson').length,
+      }
+      const existingNames = new Set(achievements.map(a => a.name))
+      const newlyEarned = GARDEN_MILESTONES.filter(m =>
+        m.check(milestoneData) && !existingNames.has(m.name)
+      )
+      if (newlyEarned.length === 0) return
+      for (const m of newlyEarned) {
+        await api.awardAchievementIfNew(m.name, m.description, m.icon)
+      }
+      showToast(`${newlyEarned.length} new milestone${newlyEarned.length === 1 ? '' : 's'} reached!`)
+      // Refresh achievements via loadAll
+      await loadAll()
+    }
+    checkMilestones()
+  }, [gardenEvents, achievements, checkins, journal, reflections, artwork, goals, habits, xp, showToast])
 
   return (
     <>
@@ -213,21 +249,13 @@ export default function GrowScreen({ onNav }) {
           <h2>Your Garden</h2>
           <span>{xp} XP · {leaves} leaves</span>
         </div>
-        <Card className="pattern" style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '80px', marginBottom: '12px' }}>{treeEmoji}</div>
-          <strong style={{ fontSize: '20px' }}>{leaves} leaves growing</strong>
-          <p className="muted" style={{ marginTop: '8px' }}>
-            XP comes from exploring, checking in, playing and reflecting. You never have to chase a streak.
-          </p>
-          <div style={{ marginTop: '16px' }}>
-            <div className="miniProgress"><i style={{ width: (xp % 100) + '%' }} /></div>
-            <small className="muted">{xp % 100} / 100 XP to next leaf</small>
-          </div>
-          <div className="chips" style={{ marginTop: '14px', justifyContent: 'center' }}>
-            <button className="chip" onClick={() => setGardenPrefsOpen(true)}>🌳 Choose plant & theme</button>
-            <button className="chip" onClick={() => setMemoryOpen(true)}>💾 AI memory & privacy</button>
-          </div>
-        </Card>
+        <GardenWidget
+          onOpenPrefs={() => setGardenPrefsOpen(true)}
+          onNav={onNav}
+        />
+        <div className="chips" style={{ marginTop: '14px', justifyContent: 'center' }}>
+          <button className="chip" onClick={() => setMemoryOpen(true)}>💾 AI memory & privacy</button>
+        </div>
       </section>
 
       {gardenEvents.length > 0 && (
@@ -243,23 +271,6 @@ export default function GrowScreen({ onNav }) {
               </div>
             ))}
           </Card>
-        </section>
-      )}
-
-      {achievements.length > 0 && (
-        <section className="section">
-          <div className="sectionTitle">
-            <h2>Achievements</h2>
-          </div>
-          <div className="featureGrid">
-            {achievements.map(a => (
-              <Card key={a.id} style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '36px' }}>{a.icon}</div>
-                <strong style={{ display: 'block', marginTop: '8px' }}>{a.name}</strong>
-                <small className="muted">{a.description}</small>
-              </Card>
-            ))}
-          </div>
         </section>
       )}
 

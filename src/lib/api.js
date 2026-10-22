@@ -196,6 +196,18 @@ export async function addAchievement(achievement) {
   return data
 }
 
+// Award an achievement only if the user doesn't already have one with the same name.
+// Prevents duplicate milestone rewards from repeated clicks or screen reloads.
+export async function awardAchievementIfNew(name, description, icon) {
+  const { data: existing } = await supabase
+    .from('achievements')
+    .select('id')
+    .eq('name', name)
+    .maybeSingle()
+  if (existing) return { alreadyAwarded: true }
+  return addAchievement({ name, description, icon })
+}
+
 // Habits
 export async function getHabits() {
   const { data, error } = await supabase.from('habits').select('*').order('created_at', { ascending: false })
