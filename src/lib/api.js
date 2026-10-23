@@ -442,3 +442,47 @@ export async function deleteAllCycleEntries() {
   const { error } = await supabase.from('cycle_entries').delete().neq('id', '00000000-0000-0000-0000-000000000000')
   if (error) console.error('deleteAllCycleEntries', error)
 }
+
+// Photo albums — owner-scoped via RLS
+export async function getAlbums() {
+  const { data, error } = await supabase
+    .from('photo_albums').select('*').order('created_at', { ascending: false })
+  if (error) console.error('getAlbums', error)
+  return data || []
+}
+
+export async function addAlbum(album) {
+  const { data, error } = await supabase.from('photo_albums').insert(album).select().maybeSingle()
+  if (error) console.error('addAlbum', error)
+  return data
+}
+
+export async function updateAlbum(id, updates) {
+  const { data, error } = await supabase
+    .from('photo_albums').update(updates).eq('id', id).select().maybeSingle()
+  if (error) console.error('updateAlbum', error)
+  return data
+}
+
+export async function deleteAlbum(id) {
+  const { error } = await supabase.from('photo_albums').delete().eq('id', id)
+  if (error) console.error('deleteAlbum', error)
+}
+
+export async function getAlbumPhotos(albumId) {
+  const { data, error } = await supabase
+    .from('album_photos').select('*').eq('album_id', albumId).order('created_at', { ascending: false })
+  if (error) console.error('getAlbumPhotos', error)
+  return data || []
+}
+
+export async function addAlbumPhoto(photo) {
+  const { data, error } = await supabase.from('album_photos').insert(photo).select().maybeSingle()
+  if (error) console.error('addAlbumPhoto', error)
+  return data
+}
+
+export async function deleteAlbumPhoto(id) {
+  const { error } = await supabase.from('album_photos').delete().eq('id', id)
+  if (error) console.error('deleteAlbumPhoto', error)
+}

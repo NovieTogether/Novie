@@ -2,11 +2,13 @@ import { useState } from 'react'
 import { useApp } from '../context/AppContext.jsx'
 import { CONNECT_TILES } from '../lib/constants.js'
 import { Modal, Card, PageHead, Tile } from '../components/ui.jsx'
+import SharedMoments from '../components/SharedMoments.jsx'
 import * as api from '../lib/api.js'
 
 export default function ConnectScreen({ onNav }) {
   const { connections, refreshConnections, awardXp, showToast } = useApp()
   const [activeModal, setActiveModal] = useState(null)
+  const [momentsOpen, setMomentsOpen] = useState(false)
   const [selectedConnection, setSelectedConnection] = useState(null)
   const [connName, setConnName] = useState('')
   const [connType, setConnType] = useState('Friend')
@@ -132,6 +134,7 @@ export default function ConnectScreen({ onNav }) {
               ))}
             </div>
             <div className="chips" style={{ marginTop: '16px' }}>
+              <button className="chip" onClick={() => { setActiveModal(null); setMomentsOpen(true) }}>📸 Shared moments</button>
               <button className="chip" onClick={() => { setActiveModal(null); onNav('play') }}>🎮 Play together</button>
               <button className="chip" onClick={() => { setActiveModal(null); onNav('explore') }}>💬 Communication Lab</button>
             </div>
@@ -168,6 +171,8 @@ export default function ConnectScreen({ onNav }) {
           <p className="muted" style={{ marginTop: '12px' }}>Tap any connection card to adjust their permissions.</p>
         )}
       </Modal>
+
+      <SharedMoments open={momentsOpen} onClose={() => setMomentsOpen(false)} />
     </>
   )
 }
